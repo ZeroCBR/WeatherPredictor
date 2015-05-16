@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  time: 2015-05-16 21:33:32
+  temp: MyText
+  precip: MyText
+  windDir: MyText
+  windSpeed: MyText
+  condition: MyText
+
+two:
+  time: 2015-05-16 21:33:32
+  temp: MyText
+  precip: MyText
+  windDir: MyText
+  windSpeed: MyText
+  condition: MyText
