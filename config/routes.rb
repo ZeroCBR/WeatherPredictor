@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+  get 'weather/data_by_pcode'
+
+  get 'weather/data_by_loc'
+
+  get 'weather/predict_by_pcode'
+
+  get 'weather/predict_by_LatLon'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
