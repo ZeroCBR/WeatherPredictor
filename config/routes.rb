@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'weather/index'
+
   get 'weather/data_by_pcode'
 
   get 'weather/data_by_loc'
@@ -11,7 +13,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'weather#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
