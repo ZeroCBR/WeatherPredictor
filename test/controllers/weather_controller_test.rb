@@ -21,4 +21,9 @@ class WeatherControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get listLocations" do
+    get :listLocations
+    assert_response :success
+  end
+
 end
