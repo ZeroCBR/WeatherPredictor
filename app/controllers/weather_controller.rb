@@ -10,4 +10,8 @@ class WeatherController < ApplicationController
 
   def predict_by_LatLon
   end
+
+  def listLocations
+  		@locations=Location.all
+  end
 end
