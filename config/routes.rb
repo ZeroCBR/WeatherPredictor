@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
+  get 'weather/listLocations'
+
   get 'weather/index'
 
   get 'weather/data_by_pcode'
 
-  get 'weather/data_by_loc'
+  get 'weather/locations' => 'weather#data_by_loc'
 
   get 'weather/predict_by_pcode'
 
