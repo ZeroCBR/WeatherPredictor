@@ -4,7 +4,6 @@ class CreateLocations < ActiveRecord::Migration
       t.text :name
       t.text :latitude
       t.text :longitude
-      t.text :pcode
 
       t.timestamps null: false
     end

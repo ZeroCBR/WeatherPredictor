@@ -1,17 +1,17 @@
 class WeatherController < ApplicationController
-  def data_by_pcode
-  end
+    def data_by_pcode
+    end
 
-  def data_by_loc
-  end
+    def data_by_loc
+    end
 
-  def predict_by_pcode
-  end
+    def predict_by_pcode
+    end
 
-  def predict_by_LatLon
-  end
+    def predict_by_LatLon
+    end
 
-  def listLocations
-  		@locations=Location.all
-  end
+    def listLocations
+        @locations=Location.all
+    end
 end
