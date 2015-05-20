@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20150516115403) do
   add_index "measurements", ["location_id"], name: "index_measurements_on_location_id"
 
   create_table "postcodes", force: :cascade do |t|
+    t.text     "postcode"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
