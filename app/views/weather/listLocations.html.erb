@@ -4,7 +4,7 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>Lattitude</th>
+			<th>Latitude</th>
 			<th>Longitude</th>
 			<th>Last Update</th>
 			<th colspan="3"></th>
@@ -14,10 +14,10 @@
 	<tbody>
 		<% @locations.each do |location| %>
 		<tr>
-			<td><%= @location.name %></td>
-			<td><%=	@location.lattitude %></td>
-			<td><%= @location.longitude %></td>
-			<td><%= @location.updated_at %></td>
+			<td><%= location.name %></td>
+			<td><%=	location.latitude %></td>
+			<td><%= location.longitude %></td>
+			<td><%= location.updated_at %></td>
 		</tr>
 		<% end %>
 	</tbody>
