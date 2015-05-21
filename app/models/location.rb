@@ -1,5 +1,5 @@
 class Location < ActiveRecord::Base
-	has_many :measurement
+	has_many :measurements
 	belongs_to :postcode
 	validates :name, uniqueness: true
 end
