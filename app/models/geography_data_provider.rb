@@ -1,5 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
+require_relative 'location'
+require_relative 'postcode'
 
 class GeographyDataProvider
   @key_array = ['AIzaSyDAs8cXzygtk03zoh5a9DlKOuPevDo203k', 'AIzaSyBRwgsM4kHsWRUcNFqvM6wCTzoK50xsAQs']

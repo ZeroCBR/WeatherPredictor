@@ -10,7 +10,7 @@ class ForecastDataProvider
   end
 
   def extract_data(location)
-    forecast = JSON.parse(open("https://api.forecast.io/forecast/#{@api_key}/#{location.lat},#{location.lon}?units=si&exclude=minutely,hourly,daily,alerts,flags").read)['currently']
+    forecast = JSON.parse(open("https://api.forecast.io/forecast/#{@api_key}/#{location.latitude},#{location.longitude}?units=si&exclude=minutely,hourly,daily,alerts,flags").read)['currently']
     weather_log = Measurement.new
     weather_log.location_id = location.id
     weather_log.temp = forecast['temperature']
