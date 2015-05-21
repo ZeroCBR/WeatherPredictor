@@ -9,7 +9,7 @@ class GeographyDataProvider
   end
 
   # @return [Hash]
-  def extract_bom_data(connection_string)
+  def extract_latitude_longitude(connection_string)
     doc =  Nokogiri::HTML(open(connection_string))
     result = Hash.new
     if doc != nil
@@ -24,11 +24,42 @@ class GeographyDataProvider
     return result
   end
 
+  def extract_location_info(location_info_node)
+    link = location_info_node[:href]
+    name = location_info_node.content
+    location = Location.find_by_name(name)
+    if location == nil
+      location_position = extract_latitude_longitude('http://www.bom.gov.au' + link)
+      location = Location.new
+      location.latitude = location_position['latitude']
+      location.longitude = location_position['longitude']
+      location.name = name
+      location.postcode = extract_post_code(name)
+      double_check_location = Location.find_by_name(name)
+      if  double_check_location == nil
+        location.save
+      end
+      return location
+    else
+      return location
+    end
+  end
+
   def extract_post_code(address)
     format_address = address,lstrip.lstrip.gsub(/ /, '+')
     index = Time.to_i % @key_array.length
     api_key = @key_array[index]
     result = JSON.parser(open("#{@connection_string}?key=#{api_key}&address=#{format_address}"))['results']
-    return result[0][6]['long_name']
+    postcode = result[0][6]['long_name']
+    post_code = Postcode.find_by_postcode(postcode)
+    if post_code == nil
+      post_code =Postcode.new
+      post_code.postcode = postcode
+      double_check_postcode = Postcode.find_by_postcode(postcode)
+      if double_check_postcode == nil
+        post_code.save
+      end
+    end
+    return post_code
   end
 end
