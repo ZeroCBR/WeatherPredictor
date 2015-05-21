@@ -17,7 +17,8 @@ class BomDataProvider
     weather_log_list.each {
         |weather_log|
       location_info_node = weather_log.css('a')[0]
-      location = self.extract_location_info(location_info_node)
+      geography_data_provider = GeographyDataProvider.new
+      location = geography_data_provider.extract_location_info(location_info_node)
       weather_info_node_list = weather_log.css('td')
       weather_info = self.extract_weather_info(weather_info_node_list)
       weather_log = Measurement.new
@@ -28,34 +29,14 @@ class BomDataProvider
       weather_log.windDir = Converter.translate_direction_to_degree(weather_info['wind-direction'])
       weather_log.windSpeed = weather_info['wind-speed']
       weather_log.condition = '-'
-      weather_log.time = Converter.format_datetime(weather_info['date-time'])
+      weather_log.time = Time.now
       #weather_log.save
       result.push(weather_log)
     }
     return result
   end
 
-  def extract_location_info(location_info_node)
-    link = location_info_node[:href]
-    name = location_info_node.content
-    location = Location.find_by_name(name)
-    if location == nil
-      geography_data_provider = GeographyDataProvider.new()
-      location_position = geography_data_provider.extract_bom_data('http://www.bom.gov.au' + link)
-      location = Location.new
-      location.latitude = location_position['latitude']
-      location.longitude = location_position['longitude']
-      location.name = name
-      double_check_location = Location.find_by_name(name)
-      location.postcode = geography_data_provider.extract_post_code(name)
-      if  double_check_location == nil
-        location.save
-      end
-      return location
-    else
-      return location
-    end
-  end
+
 
   def extract_weather_info(weather_info_node_list)
     result = Hash.new
