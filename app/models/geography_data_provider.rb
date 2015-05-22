@@ -1,25 +1,34 @@
 require 'nokogiri'
 require 'open-uri'
+require 'json'
+require_relative 'google_map_api_data_provider'
 require_relative 'location'
 require_relative 'postcode'
+OpenSSL::SSL::VERIFY_PEER=OpenSSL::SSL::VERIFY_NONE
+# require_relative 'location'
+# require_relative 'postcode'
 
 class GeographyDataProvider
-  @key_array = ['AIzaSyDAs8cXzygtk03zoh5a9DlKOuPevDo203k', 'AIzaSyBRwgsM4kHsWRUcNFqvM6wCTzoK50xsAQs']
+
 
   def initialize
     @connection_string = 'https://maps.googleapis.com/maps/api/geocode/json'
+    @key_array = %w(AIzaSyDAs8cXzygtk03zoh5a9DlKOuPevDo203k AIzaSyBRwgsM4kHsWRUcNFqvM6wCTzoK50xsAQs)
   end
 
-  # @return [Hash]
+
   def extract_latitude_longitude(connection_string)
-    doc =  Nokogiri::HTML(open(connection_string))
+    doc = Nokogiri::HTML(open(connection_string))
     result = Hash.new
     if doc != nil
       node_list = doc.css('.stationdetails td')
+      name = node_list[2].content
+      name[' Name: '] = ''
       latitude = node_list[3].content
       latitude[' Lat: '] = ''
       longitude = node_list[4].content
       longitude[' Lon: '] = ''
+      result['name'] = name
       result['latitude'] = latitude.to_f
       result['longitude'] = longitude.to_f
     end
@@ -28,17 +37,17 @@ class GeographyDataProvider
 
   def extract_location_info(location_info_node)
     link = location_info_node[:href]
-    name = location_info_node.content
-    location = Location.find_by_name(name)
+    location_position = extract_latitude_longitude('http://www.bom.gov.au' + link)
+    location = Location.find_by_name(location_position['name'])
     if location == nil
-      location_position = extract_latitude_longitude('http://www.bom.gov.au' + link)
+      #location_position = extract_latitude_longitude('http://www.bom.gov.au' + link)
       location = Location.new
       location.latitude = location_position['latitude']
       location.longitude = location_position['longitude']
-      location.name = name
-      location.postcode = extract_post_code(name)
+      location.name = location_position['name']
+      location.postcode = extract_post_code(location_position['name'], location_position['latitude'], location_position['longitude'])
       double_check_location = Location.find_by_name(name)
-      if  double_check_location == nil
+      if double_check_location == nil
         location.save
       end
       return location
@@ -47,21 +56,18 @@ class GeographyDataProvider
     end
   end
 
-  def extract_post_code(address)
-    format_address = address,lstrip.lstrip.gsub(/ /, '+')
-    index = Time.to_i % @key_array.length
-    api_key = @key_array[index]
-    result = JSON.parser(open("#{@connection_string}?key=#{api_key}&address=#{format_address}"))['results']
-    postcode = result[0][6]['long_name']
-    post_code = Postcode.find_by_postcode(postcode)
-    if post_code == nil
-      post_code =Postcode.new
-      post_code.postcode = postcode
-      double_check_postcode = Postcode.find_by_postcode(postcode)
-      if double_check_postcode == nil
-        post_code.save
+  def extract_post_code(address, latitude, longitude)
+    google_api_data_provider = GoogleMapApiDataProvider.new
+    code = google_api_data_provider.extract_post_code(address, latitude, longitude)
+    postcode = Postcode.find_by_postcode(code)
+    if postcode == nil
+      postcode = Postcode.new
+      postcode.postcode = code
+      double_check_postcode = Postcode.find_by_postcode(code)
+      if double_check_postcode
+        postcode.save
       end
     end
-    return post_code
+    return postcode
   end
 end
