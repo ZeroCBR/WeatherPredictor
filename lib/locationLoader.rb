@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'open-uri'
 # require_relative 'weather_record'
 # Open the HTML link with Nokogiri
-URL = 'http://www.bom.gov.au/vic/observations/melbourne.shtml'
+URL = 'http://www.bom.gov.au/vic/observations/vicall.shtml'
 URL_BASE='http://www.bom.gov.au'
 
 class LocationLoader
