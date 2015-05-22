@@ -17,7 +17,7 @@ class GeographyDataProvider
   end
 
 
-  def extract_latitude_longitude(connection_string)
+  def extract_position_details(connection_string)
     doc = Nokogiri::HTML(open(connection_string))
     result = Hash.new
     if doc != nil
@@ -37,7 +37,7 @@ class GeographyDataProvider
 
   def extract_location_info(location_info_node)
     link = location_info_node[:href]
-    location_position = extract_latitude_longitude('http://www.bom.gov.au' + link)
+    location_position = extract_position_details('http://www.bom.gov.au' + link)
     location = Location.find_by_name(location_position['name'])
     if location == nil
       #location_position = extract_latitude_longitude('http://www.bom.gov.au' + link)

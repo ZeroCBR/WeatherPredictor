@@ -36,15 +36,24 @@ class GoogleMapApiDataProvider
     return result
   end
 
+  def get_target_address(response_pool, latitude, longitude)
+    if response_pool != nil
+      key = get_target_geometry(response_pool, latitude, longitude)
+      if key != nil
+        return response_pool[key]
+      end
+    end
+    return nil
+  end
+
   def get_target_geometry(response_pool, latitude, longitude)
     if response_pool != nil
       distance = Hash.new
-      response_pool.each do
-        |geometry, address|
+      response_pool.each_key { |geometry|
         location_latitude = geometry['location']['lat']
         location_longitude = geometry['location']['lng']
         distance.store((latitude - location_latitude) ** 2 + (longitude - location_longitude) ** 2, geometry)
-      end
+      }
       key = get_least(distance.keys)
       return distance[key]
     end
@@ -67,7 +76,14 @@ class GoogleMapApiDataProvider
 
   def extract_post_code(address, latitude, longitude)
     response_pool = parse_response(address)
-    response = response_pool[get_target_geometry(response_pool, latitude, longitude)]
-    return response['PostCode']
+    response = get_target_address(response_pool, latitude, longitude)
+    postcode = response['PostCode']
+    if postcode == nil
+      postcode = '9999'
+    end
+    return postcode
   end
 end
+
+# geo = GoogleMapApiDataProvider.new
+# puts(geo.extract_post_code("AVALON AIRPORT", -38.03, 144.48))
