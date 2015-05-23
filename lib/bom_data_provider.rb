@@ -1,8 +1,9 @@
 require 'nokogiri'
 require 'open-uri'
 
-require_relative 'measurement'
-require_relative 'location'
+require_relative '../app/models/measurement'
+require_relative '../app/models/location'
+require_relative 'geography_data_provider'
 
 class BomDataProvider
 

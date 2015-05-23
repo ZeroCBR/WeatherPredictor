@@ -1,7 +1,7 @@
 require 'open-uri'
 require 'json'
-require_relative 'measurement'
-require_relative 'location'
+require_relative '../app/models/measurement'
+require_relative '../app/models/location'
 #Created by Dongyu Zhao, 714138
 class ForecastDataProvider
 
