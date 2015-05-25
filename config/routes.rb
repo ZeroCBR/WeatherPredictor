@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
   get 'welcome/index'
 
-  get 'weather/predicition/:lat/:long/:period' => 'predict#predict_by_pcode'
+  get 'weather/prediction/:lat/:long/:period' => 'predict#predict_by_LatLon'
 
-  get 'weather/predicition/:post_code/:period' => 'predict#predict_by_LatLon'
+  get 'weather/prediction/:post_code/:period' => 'predict#predict_by_pcode'
 
-  get 'weather/data/:location_id/:date' => 'data#data_by_pcode'
+  get 'weather/data/:location_id/:date' => 'data#data_by_loc'
 
-  get 'weather/data/:post_code/:date' => 'data#data_by_loc'
+  get 'weather/data/:post_code/:date' => 'data#data_by_pcode'
 
   get 'weather/locations' =>'data#listLocations'
 
