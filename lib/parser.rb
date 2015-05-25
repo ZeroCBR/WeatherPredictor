@@ -1,6 +1,7 @@
 class Parser
   def getFromBom
 
+
   end
 
   def getFromAPI

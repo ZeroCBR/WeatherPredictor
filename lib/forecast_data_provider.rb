@@ -24,6 +24,7 @@ class ForecastDataProvider
     end
     #weather_log.data_source = 'Forecast IO'
     weather_log.time = Time.at(forecast['time'])
+    puts("Name:#{weather_log.location.name},Time:#{weather_log.time},Temp:#{weather_log.temp},Condition:#{weather_log.condition},Precip:#{weather_log.precip},Speed:#{weather_log.windSpeed},Dir:#{weather_log.windDir}")
     #weather_log.save
     return weather_log
   end
