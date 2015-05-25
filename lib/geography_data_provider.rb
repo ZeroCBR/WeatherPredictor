@@ -10,7 +10,7 @@ OpenSSL::SSL::VERIFY_PEER=OpenSSL::SSL::VERIFY_NONE
 
 class GeographyDataProvider
 
-  def extract_position_details(connection_string)
+  def GeographyDataProvider.extract_position_details(connection_string)
     doc = Nokogiri::HTML(open(connection_string))
     result = Hash.new
     if doc != nil
@@ -28,7 +28,7 @@ class GeographyDataProvider
     return result
   end
 
-  def extract_location_info(location_info_node)
+  def GeographyDataProvider.extract_location_info(location_info_node)
     link = location_info_node[:href]
     location_position = extract_position_details('http://www.bom.gov.au' + link)
     location = Location.find_by_name(location_position['name'])
@@ -50,9 +50,8 @@ class GeographyDataProvider
     end
   end
 
-  def extract_post_code(address, latitude, longitude)
-    google_api_data_provider = GoogleMapApiDataProvider.new
-    code = google_api_data_provider.extract_post_code(address, latitude, longitude)
+  def GeographyDataProvider.extract_post_code(address, latitude, longitude)
+    code = GoogleMapApiDataProvider.extract_post_code(address, latitude, longitude)
     if code.length != 4 || (code.to_i < 3000 || code.to_i > 3999)
       code = '9999'
     end

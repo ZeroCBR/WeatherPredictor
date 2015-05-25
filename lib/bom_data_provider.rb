@@ -7,19 +7,14 @@ require_relative 'geography_data_provider'
 
 class BomDataProvider
 
-  def initialize(state, channel)
-    @connection_string = 'http://www.bom.gov.au/' + state + '/' + channel + '/'
-  end
-
-  def extract_data(location_parameter)
+  def BomDataProvider.extract_weather_with_location(state, channel, location_parameter)
     result =Array.new
-    @doc = Nokogiri::HTML(open(@connection_string + location_parameter + '.shtml'))
+    @doc = Nokogiri::HTML(open("http://www.bom.gov.au/#{state}/#{channel}/#{location_parameter}.shtml"))
     weather_log_list = @doc.css('tbody tr')
     weather_log_list.each {
         |weather_log|
       location_info_node = weather_log.css('a')[0]
-      geography_data_provider = GeographyDataProvider.new
-      location = geography_data_provider.extract_location_info(location_info_node)
+      location = GeographyDataProvider.extract_location_info(location_info_node)
       weather_info_node_list = weather_log.css('td')
       weather_info = self.extract_weather_info(weather_info_node_list)
       weather_log = Measurement.new
@@ -37,9 +32,7 @@ class BomDataProvider
     return result
   end
 
-
-
-  def extract_weather_info(weather_info_node_list)
+  def BomDataProvider.extract_weather_info(weather_info_node_list)
     result = Hash.new
     weather_info_node_list.each {
         |weather_info_node|

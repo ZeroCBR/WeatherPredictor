@@ -14,12 +14,11 @@ require 'rufus-scheduler'
 require_relative '../../lib/spider'
 
 scheduler = Rufus::Scheduler.new
-spider = Spider.new
-# spider.extract_location
-#spider.extract_weather
 
-scheduler.every '1800s' do
-	spider = Spider.new
-	spider.extract_location
-	spider.extract_weather
-end
+Spider.extract_location
+Spider.extract_weather
+
+# scheduler.every '600s' do
+# 	Spider.extract_location
+# 	Spider.extract_weather
+# end

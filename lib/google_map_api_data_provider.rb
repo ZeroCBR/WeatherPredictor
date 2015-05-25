@@ -4,17 +4,15 @@ require 'open-uri'
 OpenSSL::SSL::VERIFY_PEER=OpenSSL::SSL::VERIFY_NONE
 
 class GoogleMapApiDataProvider
-  def initialize
-    @connection_string = 'https://maps.googleapis.com/maps/api/geocode/json'
-    @key_array = %w(AIzaSyDAs8cXzygtk03zoh5a9DlKOuPevDo203k AIzaSyBRwgsM4kHsWRUcNFqvM6wCTzoK50xsAQs)
-  end
+    @@connection_string = 'https://maps.googleapis.com/maps/api/geocode/json'
+    @@key_array = %w(AIzaSyDAs8cXzygtk03zoh5a9DlKOuPevDo203k AIzaSyBRwgsM4kHsWRUcNFqvM6wCTzoK50xsAQs)
 
-  def parse_response(request_address)
+  def GoogleMapApiDataProvider.parse_response(request_address)
     format_address = request_address.strip.gsub(/ /, '+')
-    index = Time.now.to_i % @key_array.length
-    api_key = @key_array[index]
-    puts("#{@connection_string}?key=#{api_key}&address=#{format_address}")
-    responses = JSON.parse(open("#{@connection_string}?key=#{api_key}&address=#{format_address}").read)['results']
+    index = Time.now.to_i % @@key_array.length
+    api_key = @@key_array[index]
+    puts("#{@@connection_string}?key=#{api_key}&address=#{format_address}")
+    responses = JSON.parse(open("#{@@connection_string}?key=#{api_key}&address=#{format_address}").read)['results']
     # puts(responses)
     result = Hash.new
     responses.each do
@@ -36,7 +34,7 @@ class GoogleMapApiDataProvider
     return result
   end
 
-  def get_target_address(response_pool, latitude, longitude)
+  def GoogleMapApiDataProvider.get_target_address(response_pool, latitude, longitude)
     if response_pool != nil
       key = get_target_geometry(response_pool, latitude, longitude)
       if key != nil
@@ -46,7 +44,7 @@ class GoogleMapApiDataProvider
     return nil
   end
 
-  def get_target_geometry(response_pool, latitude, longitude)
+  def GoogleMapApiDataProvider.get_target_geometry(response_pool, latitude, longitude)
     if response_pool != nil
       distance = Hash.new
       response_pool.each_key { |geometry|
@@ -60,7 +58,7 @@ class GoogleMapApiDataProvider
     return nil
   end
 
-  def get_least(array)
+  def GoogleMapApiDataProvider.get_least(array)
     if array != nil
       result = array[0]
       array.each do
@@ -74,7 +72,7 @@ class GoogleMapApiDataProvider
     return nil
   end
 
-  def extract_post_code(address, latitude, longitude)
+  def GoogleMapApiDataProvider.extract_post_code(address, latitude, longitude)
     response_pool = parse_response(address)
     response = get_target_address(response_pool, latitude, longitude)
     postcode = '9999'
