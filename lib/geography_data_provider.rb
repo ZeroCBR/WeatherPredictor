@@ -10,24 +10,17 @@ OpenSSL::SSL::VERIFY_PEER=OpenSSL::SSL::VERIFY_NONE
 
 class GeographyDataProvider
 
-
-  def initialize
-    @connection_string = 'https://maps.googleapis.com/maps/api/geocode/json'
-    @key_array = %w(AIzaSyDAs8cXzygtk03zoh5a9DlKOuPevDo203k AIzaSyBRwgsM4kHsWRUcNFqvM6wCTzoK50xsAQs)
-  end
-
-
   def extract_position_details(connection_string)
     doc = Nokogiri::HTML(open(connection_string))
     result = Hash.new
     if doc != nil
       node_list = doc.css('.stationdetails td')
-      name = node_list[2].content
-      name[' Name: '] = ''
-      latitude = node_list[3].content
-      latitude[' Lat: '] = ''
-      longitude = node_list[4].content
-      longitude[' Lon: '] = ''
+      name = node_list[2].content.strip
+      name['Name: '] = ''
+      latitude = node_list[3].content.strip
+      latitude['Lat: '] = ''
+      longitude = node_list[4].content.strip
+      longitude['Lon: '] = ''
       result['name'] = name
       result['latitude'] = latitude.to_f
       result['longitude'] = longitude.to_f
@@ -46,7 +39,8 @@ class GeographyDataProvider
       location.longitude = location_position['longitude']
       location.name = location_position['name']
       location.postcode = extract_post_code(location_position['name'], location_position['latitude'], location_position['longitude'])
-      double_check_location = Location.find_by_name(name)
+      puts("Name:#{location.name},Latitude:#{location.latitude},Longitude:#{location.longitude},Postcode:#{location.postcode.postcode}")
+      double_check_location = Location.find_by_name(location.name)
       if double_check_location == nil
         location.save
       end
@@ -59,6 +53,9 @@ class GeographyDataProvider
   def extract_post_code(address, latitude, longitude)
     google_api_data_provider = GoogleMapApiDataProvider.new
     code = google_api_data_provider.extract_post_code(address, latitude, longitude)
+    if code.length != 4 || (code.to_i < 3000 || code.to_i > 3999)
+      code = '9999'
+    end
     postcode = Postcode.find_by_postcode(code)
     if postcode == nil
       postcode = Postcode.new

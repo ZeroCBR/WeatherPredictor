@@ -77,9 +77,12 @@ class GoogleMapApiDataProvider
   def extract_post_code(address, latitude, longitude)
     response_pool = parse_response(address)
     response = get_target_address(response_pool, latitude, longitude)
-    postcode = response['PostCode']
-    if postcode == nil
-      postcode = '9999'
+    postcode = '9999'
+    if response != nil
+      postcode = response['PostCode']
+      if postcode == nil
+        postcode = '9999'
+      end
     end
     return postcode
   end
