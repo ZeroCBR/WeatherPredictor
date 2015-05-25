@@ -6,7 +6,7 @@ require_relative '../app/models/location'
 class ForecastDataProvider
   @@current_index = 0
   def initialize
-    @key_array = %w(f0c8b5b69a7cd82e11fdabc6949a5c97 3cfd5e179f93cb779b3eb58d9f8c37ce 0921b86f171d0c3ded523060df73dcff e8bf417079091cd350f86d3badd5bcfd)
+    @key_array = %w(f0c8b5b69a7cd82e11fdabc6949a5c97 3cfd5e179f93cb779b3eb58d9f8c37ce 0921b86f171d0c3ded523060df73dcff e8bf417079091cd350f86d3badd5bcfd c1e4b1644cd22ce35eae78a1e16e2c3a 41d21499c9d9c2cd1904f2889bac9007)
   end
 
   def extract_data(location)continue_try = true
