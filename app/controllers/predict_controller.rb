@@ -7,7 +7,12 @@ class PredictController < ApplicationController
 		latitude=params[:lat]
 		longitude=params[:long]
 		period=params[:period]
-		render plain: params[:lat].inspect
+		render plain: Location.location_mapping(latitude, longitude).inspect
+		if location_mapping(latitude, longitude)
+
+		else
+
+		end
 	end
 
 	private
