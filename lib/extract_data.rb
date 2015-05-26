@@ -68,4 +68,48 @@ class Extractor
 				"locations"=> locations_info_all
 					}.as_json
 	end
+
+	def self.data_by_loc_json loctionId, date
+
+		date.match /(\d{2})-(\d{2})-(\d{4})/
+		time = Time.new($3,$2,$1)
+
+		measurements_data = Measurement.get_data_by_loc(loctionId, time)
+
+		measurement_now = Measurement.get_data_in_30min(loctionId)
+
+		measure_latest = measurement_now.last
+
+		measurement_json=[]
+
+		measurements_data.each do |measure|
+			each_json = {
+				'time' => measure.time,
+				'temp' => measure.temp,
+				'precip' => measure.precip,
+				'wind_direction' => Format.windDir(measure.windDir),
+				'wind_speed' => measure.windSpeed 
+			}
+
+			measurement_json << each_json
+		end
+
+
+		if measure_latest == nil
+			json_by_loc = {'date' => date, 
+				'current_temp' => "",
+				'current_cond' => "", 
+				'measurements' => measurement_json
+			}.as_json
+		else
+			json_by_loc = {'date' => date, 
+				'current_temp' => measure_latest.temp,
+				'current_cond' => measure_latest.condition, 
+				'measurements' => measurement_json
+			}.as_json
+		end
+
+		return json_by_loc
+		
+	end
 end

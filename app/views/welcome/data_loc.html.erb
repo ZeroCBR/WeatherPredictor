@@ -1,0 +1,30 @@
+<h4>Date: <%= @json_by_loc["date"] %></h4>
+<h4>current_temp: <%= @json_by_loc["current_temp"] %></h4>
+<h4>current_cond: <%= @json_by_loc["current_cond"] %></h4>
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Time</th>
+			<th>Temp</th>
+			<th>Precip</th>
+			<th>Wind Direction</th>
+			<th>Wind Speed</th>
+			<th colspan="3"></th>
+		</tr>
+
+		<tbody>
+		<% @json_by_loc["measurements"].each do |record| %>
+		<tr>
+			<td><%= record["time"] %></td>
+			<td><%=	record["temp"] %></td>
+			<td><%= record["precip"] %></td>
+			<td><%= record["wind_direction"] %></td>
+			<td><%= record["wind_speed"] %></td>
+		</tr>
+		<% end %>
+
+	</thead>
+
+</table>
+
