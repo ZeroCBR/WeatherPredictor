@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'weather/data/:location_id/:date', to: 'data#data_by_loc', location_id: /[A-Z].+/, date: /((0[1-9]|[1-2][0-9]|3[0-1])-(01|03|05|07|08|10|12)|((0[1-9]|[1-2][0-9]|30)-(04|06|09|11))|((0[1-9]|1[0-9]|2[0-8])-02))-\d{4}/
 
   get 'weather/data/:post_code/:date', to: 'data#data_by_pcode', post_code: /3\d{3}/ ,   date: /((0[1-9]|[1-2][0-9]|3[0-1])-(01|03|05|07|08|10|12)|((0[1-9]|[1-2][0-9]|30)-(04|06|09|11))|((0[1-9]|1[0-9]|2[0-8])-02))-\d{4}/
+  
   get 'weather/locations' =>'data#listLocations'
 
   # The priority is based upon order of creation: first created -> highest priority.
