@@ -1,4 +1,5 @@
 require_relative '../../lib/prediction_regression'
+require_relative '../../lib/parser'
 class PredictController < ApplicationController
 	def predict_by_pcode
 
@@ -13,14 +14,15 @@ class PredictController < ApplicationController
 		precip=[]
 		windDir=[]
 		windSpeed=[]		
+		@predictions=[]
 		if Location.location_mapping(latitude, longitude)!=nil
-			location_id=Location.location_mapping(latitude, longitude)
+			location=Location.location_mapping(latitude, longitude)
 		else
-			location_id=Location.location_similar(latitude, longitude)
+			location=Location.location_similar(latitude, longitude)
 		end
-		# render plain: Location.location_similar(latitude, longitude).inspect
-		measurements=Measurement.get_history(location_id)
-		# render plain: measurements.inspect
+		current=Parser.data_for_target_from_api(location).first
+		@predictions.push({"0"=>{"time"=>current.time, "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})				
+		measurements=Measurement.get_history(location)
 		measurements.each do |measurement|
 			time.push(measurement.time.to_i)
 			temp.push(measurement.temp.to_f)
@@ -28,18 +30,19 @@ class PredictController < ApplicationController
 			windDir.push(measurement.windDir.to_i)
 			windSpeed.push(measurement.windSpeed.to_f)
 		end
-		# render plain: time.inspect
 		ptemp=PredictionRegression.new(time,temp, period.to_i)
-		predict_temp=ptemp.executeRegression
+		predict_temp, pro_temp=ptemp.executeRegression
 		pprecip=PredictionRegression.new(time,precip, period.to_i)
-		predict_precip=pprecip.executeRegression
+		predict_precip, pro_precip=pprecip.executeRegression
 		pwindDir=PredictionRegression.new(time,windDir, period.to_i)
-		predict_windDir=pwindDir.executeRegression
+		predict_windDir, pro_windDir=pwindDir.executeRegression
 		pwindSpeed=PredictionRegression.new(time,windSpeed, period.to_i)
-		predict_windSpeed=pwindSpeed.executeRegression
-
-		# render plain: [predict_temp,predict_precip, predict_windDir, predict_windSpeed].inspect
-		render plain: [time, predict_temp,predict_precip, predict_windDir, predict_windSpeed].inspect
+		predict_windSpeed, pro_windSpeed=pwindSpeed.executeRegression		
+		(1..period.to_i/10).each do |i|
+			@predictions.push({i*10=>{"time"=>current.time+i*10*60, "rain"=>{"value"=>predict_precip[i-1], "probability"=>pro_precip[i-1]}, "temp"=>{"value"=>predict_temp[i-1], "probability"=>pro_temp[i-1]}, "windDir"=>{"value"=>predict_windDir[i-1], "probability"=>pro_windDir[i-1]}, "windSpeed"=>{"value"=>predict_windSpeed[i-1], "probability"=>pro_windSpeed}}})
+		end
+		main_hash = {"latitude" => latitude, "longitude" => longitude, "predictions" => @predictions}	
+		render plain: main_hash.inspect						
 	end
 
 	private

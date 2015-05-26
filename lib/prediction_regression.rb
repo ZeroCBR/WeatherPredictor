@@ -150,6 +150,7 @@ class PredictionRegression
 
 	def executeRegression
 		predictValue=[]
+		predictPro=[]
 		sum=0.0
 		(2...11).each do |degree|
 			polynomialRegression(degree)				
@@ -165,25 +166,31 @@ class PredictionRegression
 				predictValue.push(sum.round(4))
 				sum=0.0
 			end
-			puts "P"
-			puts @coefficientP
+			predictValue.each do |pv|
+				predictPro.push(pv/(pv+Math.sqrt(@varianceP)))
+			end			
 		elsif @varianceL<@varianceP && @varianceL<@varianceE
 			@periods.each do |period|
 				predictValue.push(@coefficientL[1]*Math.log(period)+@coefficientL[0])
 			end
-			puts "L"
-			puts @coefficientL
+			predictValue.each do |pv|
+				predictPro.push(pv/(pv+Math.sqrt(@varianceL)))
+			end
 		elsif @varianceE<=@varianceL && @varianceE<=@varianceP
 			@periods.each do |period|
 				predictValue.push(@coefficientE[0]*Math::E**(@coefficientE[1]*period))
 			end
-			puts "E"
-			puts @coefficientE
+			predictValue.each do |pv|
+				predictPro.push(pv/(pv+Math.sqrt(@varianceE)))
+			end
 		else
 			(1..@periods.size).each do |i|
 				predictValue.push(0)
 			end
+			predictValue.each do |pv|
+				predictPro.push(1)
+			end
 		end
-		return predictValue	
+		return predictValue, predictPro
 	end
 end

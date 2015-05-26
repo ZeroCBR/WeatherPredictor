@@ -45,13 +45,13 @@ class GoogleMapApiDataProvider
         rescue Exception => e
           continue_try = true
           puts("Current Key:#{api_key}")
-          puts('Current Forecast Api Used Up')
+          puts('Current Google Api Used Up')
           puts("Exception Occurred:#{e}")
           @@key_dispatcher.get_a_new_key
         end
       else
         continue_try = false
-        raise('All Forecast Api Used Up')
+        raise('All Google Api Used Up')
       end
     end
 
