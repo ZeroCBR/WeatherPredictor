@@ -15,8 +15,8 @@ require_relative '../../lib/spider'
 
 scheduler = Rufus::Scheduler.new
 
-Spider.extract
+# Spider.extract
 
-# scheduler.every '600s' do
-# 	Spider.extract
-# end
+scheduler.every '600s' do
+	Spider.extract
+end
