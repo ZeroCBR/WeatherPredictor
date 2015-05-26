@@ -11,6 +11,7 @@ OpenSSL::SSL::VERIFY_PEER=OpenSSL::SSL::VERIFY_NONE
 class GeographyDataProvider
 
   def GeographyDataProvider.extract_position_details(connection_string)
+    puts(connection_string)
     doc = Nokogiri::HTML(open(connection_string))
     result = Hash.new
     if doc != nil
@@ -30,7 +31,8 @@ class GeographyDataProvider
 
   def GeographyDataProvider.extract_location_info(location_info_node)
     link = location_info_node[:href]
-    location_position = extract_position_details('http://www.bom.gov.au' + link)
+    url = "http://www.bom.gov.au#{link}"
+    location_position = extract_position_details(url)
     location = Location.find_by_name(location_position['name'])
     if location == nil
       #location_position = extract_latitude_longitude('http://www.bom.gov.au' + link)
@@ -65,5 +67,20 @@ class GeographyDataProvider
       end
     end
     return postcode
+  end
+
+  def GeographyDataProvider.extract_location
+    url = 'http://www.bom.gov.au/vic/observations/vicall.shtml'
+    result =Array.new
+    @doc = Nokogiri::HTML(open(url))
+    weather_log_list = @doc.css('tbody tr')
+    weather_log_list.each {
+        |weather_log|
+      location_info_node = weather_log.css('a')[0]
+      location = GeographyDataProvider.extract_location_info(location_info_node)
+      result.push(location)
+      sleep(1)
+    }
+    return result
   end
 end
