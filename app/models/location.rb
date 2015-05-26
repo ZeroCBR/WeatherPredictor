@@ -13,7 +13,7 @@ class Location < ActiveRecord::Base
     id = 0
     locations.each do
     |location|
-      distance = (location.latitude-lat)**2+(location.longitude-long)**2
+      distance = (location.latitude.to_f-lat.to_f)**2+(location.longitude.to_f-long.to_f)**2
       if distance < sum
         sum = distance
         id=location.id
