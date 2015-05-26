@@ -12,6 +12,10 @@ class Parser
     return Spider.extract_weather
   end
 
+  def Parser.data_flush
+    Spider.extract
+  end
+
   def Parser.data_for_target_from_api(location_list)
     result = Array.new
     location_list.each do
