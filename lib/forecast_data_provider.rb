@@ -2,10 +2,11 @@ require 'open-uri'
 require 'json'
 require_relative '../app/models/measurement'
 require_relative '../app/models/location'
+require_relative 'api_key_dispatcher'
 #Created by Dongyu Zhao, 714138
 class ForecastDataProvider
-  @@current_index = 0
-  @@key_array = %w(6734b27177d8e08f1cae44ae93f76f74
+  @@key_dispatcher = ApiKeyDispatcher.new(
+                %w(6734b27177d8e08f1cae44ae93f76f74
                   2833e235068626ffe542e57b9d4c8b3b
                   51dfe9540e4b38053f4a29bdfebb243b
                   90f1e3a469ccd3e3c537db5f3fe27d12
@@ -21,11 +22,14 @@ class ForecastDataProvider
                   c1e4b1644cd22ce35eae78a1e16e2c3a
                   41d21499c9d9c2cd1904f2889bac9007
                   e337ca42a6dadf196fe1d372e07e94fd)
+  )
 
-  def ForecastDataProvider.extract_data(location)continue_try = true
+  def ForecastDataProvider.extract_data(location)
+    continue_try = true
+    puts(location.name)
     while continue_try
-      if @@current_index < @@key_array.length
-        api_key = @@key_array[@@current_index]
+      api_key = @@key_dispatcher.get_current_key
+      if api_key != nil
         puts("Current Key:#{api_key}")
         begin
           forecast = JSON.parse(open("https://api.forecast.io/forecast/#{api_key}/#{location.latitude},#{location.longitude}?units=si&exclude=minutely,hourly,daily,alerts,flags").read)['currently']
@@ -48,10 +52,10 @@ class ForecastDataProvider
           return weather_log
         rescue Exception => e
           continue_try = true
-          puts("Current Key Index:#{@@current_index}")
-          puts("Current Key:#{@@key_array[@@current_index]}")
+          puts("Current Key:#{api_key}")
           puts('Current Forecast Api Used Up')
-          @@current_index = @@current_index + 1
+          puts("Exception Occurred:#{e}")
+          @@key_dispatcher.get_a_new_key
         end
       else
         continue_try = false

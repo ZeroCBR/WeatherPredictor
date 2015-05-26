@@ -1,37 +1,60 @@
 require 'json'
 require 'open-uri'
+require_relative 'api_key_dispatcher'
 
 OpenSSL::SSL::VERIFY_PEER=OpenSSL::SSL::VERIFY_NONE
 
 class GoogleMapApiDataProvider
-    @@connection_string = 'https://maps.googleapis.com/maps/api/geocode/json'
-    @@key_array = %w(AIzaSyDAs8cXzygtk03zoh5a9DlKOuPevDo203k AIzaSyBRwgsM4kHsWRUcNFqvM6wCTzoK50xsAQs)
+  @@connection_string = 'https://maps.googleapis.com/maps/api/geocode/json'
+  @@key_dispatcher = ApiKeyDispatcher.new(
+      %w(AIzaSyDAs8cXzygtk03zoh5a9DlKOuPevDo203k
+         AIzaSyBRwgsM4kHsWRUcNFqvM6wCTzoK50xsAQs)
+  )
 
   def GoogleMapApiDataProvider.parse_response(request_address)
+    continue_try = true
+    puts(request_address)
     format_address = request_address.strip.gsub(/ /, '+')
-    index = Time.now.to_i % @@key_array.length
-    api_key = @@key_array[index]
-    puts("#{@@connection_string}?key=#{api_key}&address=#{format_address}")
-    responses = JSON.parse(open("#{@@connection_string}?key=#{api_key}&address=#{format_address}").read)['results']
-    # puts(responses)
-    result = Hash.new
-    responses.each do
-      |response|
-      address_components = response['address_components']
-      address = Hash.new
-      address_components.each do
-        |component|
-        type = component['types']
-        address.store('Establishment', component['long_name']) if type.include?('establishment')
-        address.store('Route', component['long_name']) if type.include?('route')
-        address.store('Locality', component['long_name']) if type.include?('locality')
-        address.store('State', component['long_name']) if type.include?('administrative_area_level_1')
-        address.store('Country', component['long_name']) if type.include?('country')
-        address.store('PostCode', component['long_name']) if type.include?('postal_code')
+    while continue_try
+      api_key = @@key_dispatcher.get_current_key
+      if api_key != nil
+        puts("Current Key:#{api_key}")
+        url = "#{@@connection_string}?key=#{api_key}&address=#{format_address}"
+        puts(url)
+        begin
+          responses = JSON.parse(open(url).read)['results']
+          # puts(responses)
+          result = Hash.new
+          responses.each do
+          |response|
+            address_components = response['address_components']
+            address = Hash.new
+            address_components.each do
+            |component|
+              type = component['types']
+              address.store('Establishment', component['long_name']) if type.include?('establishment')
+              address.store('Route', component['long_name']) if type.include?('route')
+              address.store('Locality', component['long_name']) if type.include?('locality')
+              address.store('State', component['long_name']) if type.include?('administrative_area_level_1')
+              address.store('Country', component['long_name']) if type.include?('country')
+              address.store('PostCode', component['long_name']) if type.include?('postal_code')
+            end
+            result.store(response['geometry'], address)
+          end
+          return result
+        rescue Exception => e
+          continue_try = true
+          puts("Current Key:#{api_key}")
+          puts('Current Forecast Api Used Up')
+          puts("Exception Occurred:#{e}")
+          @@key_dispatcher.get_a_new_key
+        end
+      else
+        continue_try = false
+        raise('All Forecast Api Used Up')
       end
-      result.store(response['geometry'], address)
     end
-    return result
+
   end
 
   def GoogleMapApiDataProvider.get_target_address(response_pool, latitude, longitude)
