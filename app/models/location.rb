@@ -9,7 +9,7 @@ class Location < ActiveRecord::Base
 
   def self.location_similar(lat, long)
     locations = self.all
-    sum = 1296000000000
+    sum = 1296000000000.0
     id = 0
     locations.each do
     |location|
