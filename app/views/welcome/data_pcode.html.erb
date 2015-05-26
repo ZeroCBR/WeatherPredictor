@@ -1,0 +1,46 @@
+
+
+<h2>Locations</h2>
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th rowspan="2">Name</th>
+			<th rowspan="2">Latitude</th>
+			<th rowspan="2">Longitude</th>
+			<th rowspan="2">Last Update</th>
+			<th rowspan="2">Post Code</th>
+			<th id="measurement" colspan="5">Measurement</th>
+	</tr>
+	<tr>
+					<th id="dt">Data Time</th>
+					<th id="tm">Temperature</th>
+					<th id="pr">Precip</th>
+					<th id="wd">Wind Direction</th>
+					<th id="ws">Wind Speed</th>
+	</tr>
+	</thead>
+
+	<tbody>
+		<% @locations.each do |location| %>
+		<tr>
+			<td><%= location.name %></td>
+			<td><%=	location.latitude %></td>
+			<td><%= location.longitude %></td>
+			<td><%= location.updated_at %></td>
+			<td><%= location.postcode.postcode %></td>
+			<td>
+					<% location.measurements.each do |m| %>
+					<tr>
+						<td headers="td"><%= m.time %></td>
+						<td headers="tm"><%= m.temp %></td>
+						<td headers="pr"><%= m.precip %></td>
+						<td headers="wd"><%= m.windDir %></td>
+						<td headers="ws"><%= m.windSpeed %></td>
+					</tr>
+					<% end %>
+			</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
