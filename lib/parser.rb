@@ -23,6 +23,7 @@ class Parser
       weather_log = ForecastDataProvider.extract_data(location)
       result.push(weather_log)
     end
+    return result
   end
 end
 
