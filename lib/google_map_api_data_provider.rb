@@ -11,8 +11,9 @@ class GoogleMapApiDataProvider
     format_address = request_address.strip.gsub(/ /, '+')
     index = Time.now.to_i % @@key_array.length
     api_key = @@key_array[index]
-    puts("#{@@connection_string}?key=#{api_key}&address=#{format_address}")
-    responses = JSON.parse(open("#{@@connection_string}?key=#{api_key}&address=#{format_address}").read)['results']
+    url = "#{@@connection_string}?key=#{api_key}&address=#{format_address}"
+    puts(url)
+    responses = JSON.parse(open(url).read)['results']
     # puts(responses)
     result = Hash.new
     responses.each do
