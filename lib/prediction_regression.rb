@@ -3,33 +3,18 @@ require 'matrix' # perform the matrix operation
 class PredictionRegression
 	@@TYPE=["linear","polynomial", "exponential", "logarithmic"]
 	# read the arguments from the command line and jump to the specified regression
-	def initialize x, y
+	def initialize x, y, period
 		@x=x
 		@y=y
+		@periods=[]
+		periodToArray(period)
 		@expectY=Array.new
-		@coefficient=Array.new
-		@variance=2**1000
-	end
-
-	# perform linear regression
-	def linearRegression()
-		sumXY=0.0
-		sumXSquare=0.0
-		i=0
-		xAverage=calculateAverage(@x)
-		yAverage=calculateAverage(@y)
-		begin 
-			sumXY+=@x[i]*@y[i]
-			sumXSquare+=@x[i]**2
-			i+=1
-		end while i<@x.length
-		b=(sumXY-@x.length*xAverage*yAverage)/(sumXSquare-@x.length*xAverage**2)
-		a=yAverage-b*xAverage
-		a=a.round(2) # return 2 decimal places
-		b=b.round(2) # return 2 decimal places
-		@coefficient << a
-		@coefficient << b
-		calculateExpectY(@coefficient,"linear")
+		@coefficientP=Array.new
+		@coefficientE=Array.new
+		@coefficientL=Array.new
+		@varianceP=2**1000
+		@varianceE=2**1000
+		@varianceL=2**1000
 	end
 
 	# perform polynomial regression
@@ -58,7 +43,7 @@ class PredictionRegression
 			sumXlny+=@x[i]*Math.log(@y[i])
 			i+=1
 			# catch Math::DomainError
-			rescue Math::DomainError
+		rescue Math::DomainError
 			puts "Cannot perform exponential regression on this data ! "
 			exit(1)
 		end while i<@x.length
@@ -67,9 +52,9 @@ class PredictionRegression
 		a=Math::E**a
 		a=a.round(2) # return 2 decimal places
 		b=b.round(2) # return 2 decimal places
-		@coefficient << a
-		@coefficient << b
-		calculateExpectY(@coefficient,"exponential") 
+		@coefficientE << a
+		@coefficientE << b
+		calculateExpectY(@coefficientE,"exponential") 
 	end
 
 	# perform logarithmic regression
@@ -86,7 +71,7 @@ class PredictionRegression
 			sumlnxSquare+=Math.log(@x[i])**2
 			i+=1
 			# catch Math::DomainError
-			rescue Math::DomainError
+		rescue Math::DomainError
 			puts "Cannot perform exponential regression on this data ! "
 			exit(1)
 		end while i<@x.length
@@ -94,9 +79,9 @@ class PredictionRegression
 		a=(sumY-b*sumlnx)/@x.length
 		b=b.round(2) # return 2 decimal places
 		a=a.round(2) # return 2 decimal places
-		@coefficient << a
-		@coefficient << b
-		calculateExpectY(@coefficient,"logarithmic") 
+		@coefficientL << a
+		@coefficientL << b		
+		calculateExpectY(@coefficientL,"logarithmic") 
 	end
 
 	# calculate the average variance
@@ -117,37 +102,32 @@ class PredictionRegression
 	# - type: regression type
 	def calculateExpectY(coefficient,type)
 		sum=0.0
+		@expectY=Array.new
 		case type
-		when @@TYPE[0]
-			@x.each do |x|
-				@expectY << coefficient[1]*x+coefficient[0]
-			end
-			@variance=calculateAverageVariance
 		when @@TYPE[1]
 			@x.each_with_index do |x,i|
 				coefficient.each_with_index do |item,index|
 					sum+=item*@x[i]**index
 				end
-				@expectY << sum.round(2)
+				@expectY << sum.round(4)
 				sum=0.0
 			end
 			tmp=calculateAverageVariance
 			# record the coefficient with minimum variance
-			if tmp<@variance
-				@variance=tmp
-				@coefficient=coefficient			
+			if tmp<@varianceP
+				@varianceP=tmp
+				@coefficientP=coefficient			
 			end		
-			@expectY=Array.new
 		when @@TYPE[2]
-			@x.each do |x|
-				@expectY << coefficient[0]*Math::E**(coefficient[1]*x)
+			@x.each do |x|				
+				@expectY << @coefficientE[0]*Math::E**(@coefficientE[1]*x)
 			end
-			@variance=calculateAverageVariance
+			@varianceE=calculateAverageVariance
 		when @@TYPE[3]
 			@x.each do |x|
-				@expectY << coefficient[1]*Math.log(x)+coefficient[0]
+				@expectY << @coefficientL[1]*Math.log(x)+@coefficientL[0]				
 			end
-			@variance=calculateAverageVariance
+			@varianceL=calculateAverageVariance			
 		end		
 	end
 
@@ -160,5 +140,50 @@ class PredictionRegression
 			sum=sum+item.to_f
 		end
 		return sum/array.length
+	end
+
+	def periodToArray(period)
+		(1..period/10).each do |i|
+			@periods.push(i*10*60+Time.now.to_i)
+		end
+	end
+
+	def executeRegression
+		predictValue=[]
+		sum=0.0
+		(2...11).each do |degree|
+			polynomialRegression(degree)				
+		end
+		exponentialRegression		
+		logarithmicRegression
+
+		if @varianceP<@varianceL && @varianceP<@varianceE
+			@periods.each_with_index do |period,i|
+				@coefficientP.each_with_index do |item,index|
+					sum+=item*period[i]**index
+				end
+				predictValue.push(sum.round(4))
+				sum=0.0
+			end
+			puts "P"
+			puts @coefficientP
+		elsif @varianceL<@varianceP && @varianceL<@varianceE
+			@periods.each do |period|
+				predictValue.push(@coefficientL[1]*Math.log(period)+@coefficientL[0])
+			end
+			puts "L"
+			puts @coefficientL
+		elsif @varianceE<=@varianceL && @varianceE<=@varianceP
+			@periods.each do |period|
+				predictValue.push(@coefficientE[0]*Math::E**(@coefficientE[1]*period))
+			end
+			puts "E"
+			puts @coefficientE
+		else
+			(1..@periods.size).each do |i|
+				predictValue.push(0)
+			end
+		end
+		return predictValue	
 	end
 end
