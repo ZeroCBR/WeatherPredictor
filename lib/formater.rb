@@ -41,4 +41,13 @@ class Format
 		end
 	end
 
+	def self.time_dd_mm_yyyy time
+		updated_time = Time.at(time).strftime("%I:%M%P %d-%m-%Y")
+		return updated_time
+	end
+
+	def self.time_hh_mm_ss time
+		updated_time = Time.at(time).strftime("%I:%M:%S %P")
+		return updated_time
+	end
 end

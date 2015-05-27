@@ -18,8 +18,7 @@
 			<td><%= location.name %></td>
 			<td><%=	location.latitude %></td>
 			<td><%= location.longitude %></td>
-			<% update_time=Time.at(location.updated_at).strftime("%I:%M%P %d-%m-%Y") %>
-			<td><%= update_time %></td>
+			<td><%= Format.time_dd_mm_yyyy(location.updated_at) %></td>
 			<td><%= location.postcode.postcode %></td>
 		</tr>
 		<% end %>

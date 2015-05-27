@@ -15,30 +15,30 @@ class Extractor
 			measure_total = measure_each.collect do |m|
 				measure_total = 
 				{
-					"time"=> m.time,
-					"temp"=> m.temp,
-					"precip"=> m.precip,
-					"wind_direction"=> Format.windDir(m.windDir),
-					"wind_speed"=> m.windSpeed,
+					'time'=> Format.time_hh_mm_ss(m.time),
+					'temp'=> m.temp,
+					'precip'=> m.precip,
+					'wind_direction'=> Format.windDir(m.windDir),
+					'wind_speed'=> m.windSpeed,
 				}
 			end
 			location_info =
 			{
-				"id"=> l.name,
-				"lat"=> l.latitude,
-				"lon"=> l.longitude,
-				"last_update"=> l.updated_at,
-				"measurements"=> measure_total
+				'id'=> l.name,
+				'lat'=> l.latitude,
+				'lon'=> l.longitude,
+				'last_update'=> Format.time_dd_mm_yyyy(l.updated_at),
+				'measurements'=> measure_total
 			}
 
 		end	
 		return {
-				"date"=> date, 
-				"locations"=> locations_info_all
+				'date'=> date, 
+				'locations'=> locations_info_all
 					}.as_json
 	end
 
-	def self.data_by_loc_json(loction_id, date)
+	def self.data_by_loc_id(loction_id, date)
 		date.match /(\d{2})-(\d{2})-(\d{4})/
 		time = Time.new($3,$2,$1)
 
@@ -49,9 +49,9 @@ class Extractor
 
 		measurements_data.each do |measure|
 			each_json = {
-				'time' => measure.time,
+				'time' => Format.time_hh_mm_ss(measure.time),
 				'temp' => measure.temp,
-				'precip' => measure.precip,
+				'precip' => measure.precip.to_s,
 				'wind_direction' => Format.windDir(measure.windDir),
 				'wind_speed' => measure.windSpeed 
 			}
@@ -81,7 +81,7 @@ class Extractor
 		end
 		puts(location)
 		predictions = self.predict(location, period)
-		main_hash = {"latitude" => latitude, "longitude" => longitude, "predictions" => predictions}
+		main_hash = {'latitude' => latitude, 'longitude' => longitude, 'predictions' => predictions}
 		return main_hash
 	end
 
@@ -104,7 +104,7 @@ class Extractor
 		windSpeed=[]
 		predictions=[]
 		current=Parser.data_for_target_from_api(location).first
-		predictions.push({"0"=>{"time"=>current.time, "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
+		predictions.push({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
 		measurements=Measurement.get_history(location)
 		measurements.each do |measurement|
 			time.push(measurement.time.to_i)
@@ -137,18 +137,18 @@ class Extractor
 
 		@locations.each do |loc|
 			each_loc_hash = {
-				"id" => loc.name,
-				"lat" => loc.latitude,
-				"lon" => loc.longitude,
-				"last_update" => Time.at(loc.updated_at).strftime("%I:%M%P %d-%m-%Y")
+				'id' => loc.name,
+				'lat' => loc.latitude,
+				'lon' => loc.longitude,
+				'last_update' => Format.time_dd_mm_yyyy(loc.updated_at)
 			}
 			location_list << each_loc_hash
 
 		end
 
 		locations_hash={
-			"date" => date,
-			"locations" => location_list
+			'date' => date,
+			'locations' => location_list
 		}
 
 		return locations_hash
