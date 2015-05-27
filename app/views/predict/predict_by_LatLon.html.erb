@@ -1,2 +1,35 @@
 <h1>Predict#predict_by_LatLon</h1>
 <p>Find me in app/views/predict/predict_by_LatLon.html.erb</p>
+
+<h4>Latitude: <%= @output["latitude"] %></h4>
+<h4>Longitude: <%= @output["longitude"] %></h4>
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Time</th>
+			<th>Predicted Temperature</th>
+			<th>Temperature Probability</th>
+			<th>Predicted Precip</th>
+			<th>Precip Probability</th>
+			<th>Predicted Wind Direction</th>
+			<th>Wind Direction Probability</th>
+			<th>Predicted Wind Speed</th>
+			<th>Temperature Probability</th>
+			<th colspan="3"></th>
+		</tr>
+
+		<tbody>
+		<% @output["predictions"].each_with_index do |prediction, index| %>
+		<tr>
+			<% index=index*10 %>
+			<td><%= prediction["#{index}"]["time"] %></td>
+			<td><%=	prediction["#{index}"]["temp"] %></td>
+			<td><%= prediction["#{index}"]["rain"] %></td>
+			<td><%= prediction["#{index}"]["windDir"] %></td>
+			<td><%= prediction["#{index}"]["windSpeed"] %></td>
+		</tr>
+		<% end %>
+	</thead>
+</table>
+
