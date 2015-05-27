@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   get 'welcome/index'
 
-  get 'welcome/data_loc' =>'welcome#data_loc' 
+  get 'welcome/data_loc' =>'welcome#data_loc'
+
+  get 'welcome/data_pcode' => 'welcome#data_pcode'
 
 
 
