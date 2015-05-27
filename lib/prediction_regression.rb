@@ -167,21 +167,21 @@ class PredictionRegression
 				sum=0.0
 			end
 			predictValue.each do |pv|
-				predictPro.push(pv/(pv+Math.sqrt(@varianceP)))
+				predictPro.push(pv.abs/(pv.abs+Math.sqrt(@varianceP)))
 			end			
 		elsif @varianceL<@varianceP && @varianceL<@varianceE
 			@periods.each do |period|
 				predictValue.push(@coefficientL[1]*Math.log(period)+@coefficientL[0])
 			end
 			predictValue.each do |pv|
-				predictPro.push(pv/(pv+Math.sqrt(@varianceL)))
+				predictPro.push(pv.abs/(pv.abs+Math.sqrt(@varianceL)))
 			end
 		elsif @varianceE<=@varianceL && @varianceE<=@varianceP
 			@periods.each do |period|
 				predictValue.push(@coefficientE[0]*Math::E**(@coefficientE[1]*period))
 			end
 			predictValue.each do |pv|
-				predictPro.push(pv/(pv+Math.sqrt(@varianceE)))
+				predictPro.push(pv.abs/(pv.abs+Math.sqrt(@varianceE)))
 			end
 		else
 			(1..@periods.size).each do |i|
