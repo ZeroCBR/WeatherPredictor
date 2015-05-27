@@ -3,13 +3,13 @@ require_relative '../../lib/extract_data'
 
 class WelcomeController < ApplicationController
   def data_pcode
-  pcode = params[:post_code]
-		date = params[:date]
-		#data_hash = Extactor.by_pcode(pcode,date)
-		@locations = Location.all
-
-		
-  end
+  	# pcode = "3678"
+  	# date = "26-05-2015"
+    @pcode = params[:post_code]
+		@date_to_search = params[:date]
+		data_hash = Extractor.by_pcode(@pcode,@date_to_search)
+		@locations = data_hash["locations"]
+	end
 
   def index
   	

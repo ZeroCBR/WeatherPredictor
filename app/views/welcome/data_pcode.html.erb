@@ -1,46 +1,58 @@
 
 
 <h2>Locations</h2>
+<h12>Post Code:<%= @pcode%></h12>
 
-<table class="table table-hover">
+<h12>Date:<%= @date_to_search%></h12>
+
+<table class="table table-bordered"  width=100% >
 	<thead>
 		<tr>
-			<th rowspan="2">Name</th>
-			<th rowspan="2">Latitude</th>
-			<th rowspan="2">Longitude</th>
-			<th rowspan="2">Last Update</th>
-			<th rowspan="2">Post Code</th>
-			<th id="measurement" colspan="5">Measurement</th>
+			<th width="50">Name</th>
+			<th width="100">Latitude</th>
+			<th width="100">Longitude</th>
+			<th width="100">Last Update</th>
+			<th id="measurement" colspan="5" width="500" align="Center">Measurement</th>
 	</tr>
 	<tr>
-					<th id="dt">Data Time</th>
-					<th id="tm">Temperature</th>
-					<th id="pr">Precip</th>
-					<th id="wd">Wind Direction</th>
-					<th id="ws">Wind Speed</th>
+		
 	</tr>
 	</thead>
 
 	<tbody>
 		<% @locations.each do |location| %>
 		<tr>
-			<td><%= location.name %></td>
-			<td><%=	location.latitude %></td>
-			<td><%= location.longitude %></td>
-			<td><%= location.updated_at %></td>
-			<td><%= location.postcode.postcode %></td>
+			<td><%= location["id"] %></td>
+			<td><%=	location["lat"] %></td>
+			<td><%= location["lon"] %></td>
+			<td><%= location["last_update"] %></td>
 			<td>
-					<% location.measurements.each do |m| %>
+			<table class="table table-bordered" width="100%">
+				<thead>
+					<th id="dt">Data Time</th>
+					<th id="tm">Temperature</th>
+					<th id="pr">Precip</th>
+					<th id="wd">Wind Direction</th>
+					<th id="ws">Wind Speed</th>
+				</thead>
+				<tbody>
+					<% location["measurements"].each do |m| %>
 					<tr>
-						<td headers="td"><%= m.time %></td>
-						<td headers="tm"><%= m.temp %></td>
-						<td headers="pr"><%= m.precip %></td>
-						<td headers="wd"><%= m.windDir %></td>
-						<td headers="ws"><%= m.windSpeed %></td>
+						<td headers="td"><%= m["time"] %></td>
+						<td headers="tm"><%= m["temp"] %></td>
+						<td headers="pr"><%= m["precip"] %></td>
+						<td headers="wd"><%= m["wind_direction"] %></td>
+						<td headers="ws"><%= m["wind_speed"] %></td>
 					</tr>
 					<% end %>
+					</tbody>
+					</table>
+					
+				
 			</td>
 		</tr>
 		<% end %>
 	</tbody>
 </table>
+
+<a href="/welcome/index">Back</a>
