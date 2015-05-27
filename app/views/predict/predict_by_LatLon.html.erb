@@ -4,19 +4,24 @@
 <h4>Latitude: <%= @output["latitude"] %></h4>
 <h4>Longitude: <%= @output["longitude"] %></h4>
 
-<table class="table table-hover">
+<table class="table table-bordered" >
 	<thead>
 		<tr>
-			<th>Time</th>
-			<th>Predicted Temperature</th>
-			<th>Temperature Probability</th>
-			<th>Predicted Precip</th>
-			<th>Precip Probability</th>
-			<th>Predicted Wind Direction</th>
-			<th>Wind Direction Probability</th>
-			<th>Predicted Wind Speed</th>
-			<th>Temperature Probability</th>
-			<th colspan="3"></th>
+			<th rowspan="2" width="100"><p align="center">Time</p></th>
+			<th colspan="2" id="tp"width="100"><p align="center">Temperature</p></th>
+			<th colspan="2" id="pc"width="100"><p align="center">Precip</p></th>
+			<th colspan="2" id="wd"width="100"><p align="center">Wind Direction</p></th>
+			<th colspan="2" id="ws"width="100"><p align="center">Wind Speed</p></th>
+		</tr>
+		<tr>
+			<th headers="tp">Predicted Temperature</th>
+			<th headers="tp">Temperature Probability</th>
+			<th headers="pc">Predicted Precip</th>
+			<th headers="pc">Precip Probability</th>
+			<th headers="wd">Predicted Wind Direction</th>
+			<th headers="wd">Wind Direction Probability</th>
+			<th headers="ws">Predicted Wind Speed</th>
+			<th headers="ws">Temperature Probability</th>
 		</tr>
 
 		<tbody>
@@ -24,10 +29,14 @@
 		<tr>
 			<% index=index*10 %>
 			<td><%= prediction["#{index}"]["time"] %></td>
-			<td><%=	prediction["#{index}"]["temp"] %></td>
-			<td><%= prediction["#{index}"]["rain"] %></td>
-			<td><%= prediction["#{index}"]["windDir"] %></td>
-			<td><%= prediction["#{index}"]["windSpeed"] %></td>
+			<td><%=	prediction["#{index}"]["temp"]["value"] %></td>
+			<td><%=	prediction["#{index}"]["temp"]["probability"] %></td>
+			<td><%= prediction["#{index}"]["rain"]["value"] %></td>
+			<td><%= prediction["#{index}"]["rain"]["probability"] %></td>
+			<td><%= prediction["#{index}"]["windDir"]["value"] %></td>
+			<td><%= prediction["#{index}"]["windDir"]["probability"] %></td>
+			<td><%= prediction["#{index}"]["windSpeed"]["value"] %></td>
+			<td><%= prediction["#{index}"]["windSpeed"]["probability"] %></td>
 		</tr>
 		<% end %>
 	</thead>

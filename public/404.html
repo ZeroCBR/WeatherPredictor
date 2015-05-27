@@ -59,19 +59,22 @@
   <div class="dialog">
     <div>
       <h1>The page you were looking for doesn't exist.</h1>
-
       <h4>Please type in proper format as below</h4>
 
       <font color="red">../weather/locations</font>
       <p>To get the list of the locations and their postcode</p>
+
       <font color="red">../weather/data/:postcode/:date</font>
       <p>The <font color="red">:postcode</font> is a 4-digit number starts with 3, and the farmat of <font color="red">:date</font> is DD-MM-YYYY</p>
+
       <font color="red">../weather/data/:location_id/:date</font>
       <p>The <font color="red">:location_id</font> is the name of the location and the first letter should be upper case, and the farmat of <font color="red">:date</font> is DD-MM-YYYY</p>
+
       <font color="red">../prediction/:post_code/:period</font> 
       <p>The <font color="red">:postcode</font> is a 4-digit number starts with 3, and the <font color="red">:period</font> is 10/30/60/120/180 </p>     
+
       <font color="red">../prediction/:lat/:long/:period</font>
-      <p>The <font color="red">:lat</font> and <font color="red">:lon</font> is the latitude and the longitude of the location, and the <font color="red">:period</font> is 10/30/60/120/180</p>
+      <p>The <font color="red">:lat</font> and <font color="red">:lon</font> is the latitude and the longitude of the location (range from -33,140 ~ -39,149), and the <font color="red">:period</font> is 10/30/60/120/180</p>
       </div>
     <p><a href="/welcome/index">Home Page</a></p>
   </div>
