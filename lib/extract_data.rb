@@ -38,12 +38,12 @@ class Extractor
 					}.as_json
 	end
 
-	def self.data_by_loc_json loctionId, date
+	def self.data_by_loc_json(loction_id, date)
 		date.match /(\d{2})-(\d{2})-(\d{4})/
 		time = Time.new($3,$2,$1)
 
-		measurements_data = Measurement.get_data_by_loc(loctionId, time)
-		measurement_now = Measurement.get_data_in_30min(loctionId)
+		measurements_data = Measurement.get_data_by_loc(loction_id, time)
+		measurement_now = Measurement.get_data_in_30min(loction_id)
 		measure_latest = measurement_now.last
 		measurement_json=[]
 
