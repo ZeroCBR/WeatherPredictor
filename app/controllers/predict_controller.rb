@@ -3,9 +3,7 @@ require_relative '../../lib/prediction_regression'
 require_relative '../../lib/parser'
 require_relative '../../lib/extract_data'
 class PredictController < ApplicationController
-	def predict_by_pcode
 
-	end
 
 	def predict_by_LatLon
 		latitude=params[:lat]
@@ -13,6 +11,13 @@ class PredictController < ApplicationController
 		period=params[:period]
 		output = Extractor.predict_by_lat_long(latitude, longitude, period)	
 		render json: output.inspect			
+	end
+
+	def predict_by_postcode
+		postcode = params[:post_code]
+		period = params[:period]
+		output = Extractor.predict_by_postcode(postcode, period)
+		render json: output.inspect
 	end
 
 	private

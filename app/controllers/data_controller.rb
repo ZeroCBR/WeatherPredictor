@@ -11,7 +11,7 @@ class DataController < ApplicationController
 
 
 		
-		output = Extractor.by_pcode(pcode,date)
+		output = Extractor.data_loc_by_pcode(pcode,date)
 
 		render plain: output.inspect
 	end
