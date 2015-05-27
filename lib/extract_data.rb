@@ -6,6 +6,7 @@ class Extractor
 		postcode = Postcode.find_by_postcode(pcode)
 		locations_needed = Location.where(postcode_id: postcode.id)
 
+		if locations_needed != nil
 		date.match /(\d{2})-(\d{2})-(\d{4})/
 		time = Time.new($3,$2,$1)
 
@@ -36,6 +37,9 @@ class Extractor
 				'date'=> date, 
 				'locations'=> locations_info_all
 					}.as_json
+		else
+			return []
+		end
 	end
 
 	def self.data_by_loc_id(loction_id, date)
