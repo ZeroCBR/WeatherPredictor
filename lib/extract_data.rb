@@ -92,12 +92,16 @@ class Extractor
 	def self.predict_by_postcode(pcode, period)
 		postcode = Postcode.find_by_postcode(pcode)
 		location_list = Location.where(postcode_id: postcode.id)
-		records = []
-		location_list.each do
-			|location|
-			records.push({'location_id' => location.name, 'predictions' => self.predict([location],period)})
+		if location_list != nil
+			records = []
+			location_list.each do
+				|location|
+				records.push({'location_id' => location.name, 'predictions' => self.predict([location],period)})
+			end
+			return records
+		else
+			return []
 		end
-		return records
 	end
 
 	def self.predict(location, period)
