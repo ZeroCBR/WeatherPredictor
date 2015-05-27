@@ -11,7 +11,7 @@ class DataController < ApplicationController
 
 
 		
-		output = Extractor.by_pcode(pcode,date)
+		output = Extractor.data_loc_by_pcode(pcode,date)
 
 		render plain: output.inspect
 	end
@@ -29,13 +29,21 @@ class DataController < ApplicationController
 		@hash_by_loc = ext_by_loc
 
 		respond_to do |format|
-   format.html #{ render plain: ext_by_loc}
-   format.json { render json: ext_by_loc }
+   format.html
+   format.json { render json: @hash_by_loc }
 		end
 
 	end
 
 	def listLocations
 		@locations = Location.all
+
+		loc_to_hash = Extractor.locations_to_hash
+
+		respond_to do |format|
+   format.html
+   format.json { render json: loc_to_hash }
+		end
+
 	end
 end

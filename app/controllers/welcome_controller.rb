@@ -5,7 +5,7 @@ class WelcomeController < ApplicationController
   def data_pcode
   pcode = params[:post_code]
 		date = params[:date]
-		#data_hash = Extactor.by_pcode(pcode,date)
+		#data_hash = Extactor.data_loc_by_pcode(pcode,date)
 		@locations = Location.all
 
 		

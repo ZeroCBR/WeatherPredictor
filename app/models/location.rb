@@ -19,7 +19,7 @@ class Location < ActiveRecord::Base
         id=location.id
       end
     end
-    return id
+    return Location.find(id)
   end
 
 
