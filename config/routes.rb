@@ -1,10 +1,6 @@
 Rails.application.routes.draw do
   get 'welcome/index'
 
-  get 'welcome/data_loc' =>'welcome#data_loc' 
-
-
-
   get 'weather/prediction/:lat/:long/:period' , to: 'predict#predict_by_LatLon',  lat: /-[3][3-9]\.\d+/, long:/[1][4][0-9]\.\d+/, period: /10|30|60|120|180/
 
   get 'weather/prediction/:post_code/:period' , to: 'predict#predict_by_pcode', post_code: /3\d{3}/, period: /10|30|60|120|180/

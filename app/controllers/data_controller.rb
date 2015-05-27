@@ -24,9 +24,15 @@ class DataController < ApplicationController
 		loctionId = location.id
 
 
-		json_by_loc = Extractor.data_by_loc_json(loctionId, date)
+		ext_by_loc = Extractor.data_by_loc_json(loctionId, date)
 
-		render plain: json_by_loc.inspect
+		@hash_by_loc = ext_by_loc
+
+		respond_to do |format|
+   format.html #{ render plain: ext_by_loc}
+   format.json { render json: ext_by_loc }
+		end
+
 	end
 
 	def listLocations
