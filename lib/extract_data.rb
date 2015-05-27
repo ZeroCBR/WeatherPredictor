@@ -4,39 +4,40 @@ require_relative './prediction_regression'
 class Extractor
 	def self.data_loc_by_pcode(pcode, date)
 		postcode = Postcode.find_by_postcode(pcode)
-		locations_needed = Location.where(postcode_id: postcode.id)
+		if postcode != nil
+			locations_needed = Location.where(postcode_id: postcode.id)
 
-		if locations_needed != nil
-		date.match /(\d{2})-(\d{2})-(\d{4})/
-		time = Time.new($3,$2,$1)
 
-		locations_info_all = locations_needed.collect do |l|
-			measure_total = []
-			measure_each = Measurement.get_data_by_loc(l.id, time)
-			measure_total = measure_each.collect do |m|
-				measure_total = 
+			date.match /(\d{2})-(\d{2})-(\d{4})/
+			time = Time.new($3,$2,$1)
+
+			locations_info_all = locations_needed.collect do |l|
+				measure_total = []
+				measure_each = Measurement.get_data_by_loc(l.id, time)
+				measure_total = measure_each.collect do |m|
+					measure_total =
+					{
+						'time'=> Format.time_hh_mm_ss(m.time),
+						'temp'=> m.temp,
+						'precip'=> m.precip,
+						'wind_direction'=> Format.windDir(m.windDir),
+						'wind_speed'=> m.windSpeed,
+					}
+				end
+				location_info =
 				{
-					'time'=> Format.time_hh_mm_ss(m.time),
-					'temp'=> m.temp,
-					'precip'=> m.precip,
-					'wind_direction'=> Format.windDir(m.windDir),
-					'wind_speed'=> m.windSpeed,
+					'id'=> l.name,
+					'lat'=> l.latitude,
+					'lon'=> l.longitude,
+					'last_update'=> Format.time_dd_mm_yyyy(l.updated_at),
+					'measurements'=> measure_total
 				}
-			end
-			location_info =
-			{
-				'id'=> l.name,
-				'lat'=> l.latitude,
-				'lon'=> l.longitude,
-				'last_update'=> Format.time_dd_mm_yyyy(l.updated_at),
-				'measurements'=> measure_total
-			}
 
-		end	
-		return {
-				'date'=> date, 
-				'locations'=> locations_info_all
-					}.as_json
+			end
+			return {
+					'date'=> date,
+					'locations'=> locations_info_all
+						}.as_json
 		else
 			return []
 		end
@@ -91,8 +92,8 @@ class Extractor
 
 	def self.predict_by_postcode(pcode, period)
 		postcode = Postcode.find_by_postcode(pcode)
-		location_list = Location.where(postcode_id: postcode.id)
-		if location_list != nil
+		if postcode != nil
+			location_list = Location.where(postcode_id: postcode.id)
 			records = []
 			location_list.each do
 				|location|
