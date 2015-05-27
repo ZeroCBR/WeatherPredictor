@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   
   get 'weather/locations' =>'data#listLocations'
 
-  get 'welcome/data_pcode' => 'welcome#data_pcode'
+  get 'welcome/data_pcode' => 'data#data_by_pcode_table'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

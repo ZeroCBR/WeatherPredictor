@@ -9,8 +9,8 @@ class PredictController < ApplicationController
 		latitude=params[:lat]
 		longitude=params[:long]
 		period=params[:period]
-		output = Extractor.predict_by_lat_long(latitude, longitude, period)	
-		render json: output.inspect			
+		@output = Extractor.predict_by_lat_long(latitude, longitude, period)	
+		#render json: output.inspect			
 	end
 
 	def predict_by_postcode
