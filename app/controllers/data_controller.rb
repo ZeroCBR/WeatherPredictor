@@ -23,7 +23,7 @@ class DataController < ApplicationController
 		@hash_by_loc = ext_by_loc
 
 		respond_to do |format|
-   format.html #{ render plain: @hash_by_loc}
+   format.html
    format.json { render json: @hash_by_loc }
 		end
 
@@ -32,9 +32,12 @@ class DataController < ApplicationController
 	def listLocations
 		@locations = Location.all
 
-		locations_json = Extractor.locations_to_hash
+		loc_to_hash = Extractor.locations_to_hash
 
-		@hash_location
+		respond_to do |format|
+   format.html
+   format.json { render json: loc_to_hash }
+		end
 
 	end
 end

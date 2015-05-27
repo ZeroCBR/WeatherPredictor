@@ -122,4 +122,30 @@ class Extractor
 		main_hash = {"latitude" => latitude, "longitude" => longitude, "predictions" => @predictions}	
 		return main_hash
 	end
+
+	def self.locations_to_hash
+		@locations = Location.all
+
+		date=Time.now.strftime("%d-%m-%Y")
+
+		location_list=[]
+
+		@locations.each do |loc|
+			each_loc_hash = {
+				"id" => loc.name,
+				"lat" => loc.latitude,
+				"lon" => loc.longitude,
+				"last_update" => Time.at(loc.updated_at).strftime("%I:%M%P %d-%m-%Y")
+			}
+			location_list << each_loc_hash
+
+		end
+
+		locations_hash={
+			"date" => date,
+			"locations" => location_list
+		}
+
+		return locations_hash
+	end
 end
