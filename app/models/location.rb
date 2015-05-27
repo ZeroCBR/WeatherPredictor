@@ -11,15 +11,17 @@ class Location < ActiveRecord::Base
     locations = self.all
     sum = 1296000000000.0
     id = 0
+    puts('Similar')
     locations.each do
     |location|
-      distance = (location.latitude-lat)**2+(location.longitude-long)**2
+      distance = (location.latitude.to_f-lat.to_f)**2+(location.longitude.to_f-long.to_f)**2
       if distance < sum
         sum = distance
         id=location.id
+        puts("Similar:#{id}")
       end
     end
-    return Location.find(id)
+    return [Location.find(id)]
   end
 
 

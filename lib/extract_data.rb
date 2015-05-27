@@ -88,9 +88,10 @@ class Extractor
 
 	def self.predict_by_lat_long latitude, longitude, period
 		location=Location.location_mapping(latitude, longitude)
-		if location == nil
-			location=Location.location_similar(latitude, longitude)
+		if location.length == 0
+			location= Location.location_similar(latitude, longitude)
 		end
+		puts(location)
 		predictions = self.predict(location, period)
 		main_hash = {"latitude" => latitude, "longitude" => longitude, "predictions" => predictions}
 		return main_hash
