@@ -39,7 +39,7 @@ class Extractor
 					'locations'=> locations_info_all
 						}.as_json
 		else
-			return []
+			return Hash.new
 		end
 	end
 
