@@ -2,24 +2,12 @@ require_relative './formater'
 require_relative './prediction_regression'
 
 class Extractor
-	def self.data_loc_by_pcode pcode, date
-		meas_jsons = {}
-		measurements = []
-		locations_needed = []		
-
+	def self.data_loc_by_pcode(pcode, date)
 		postcode = Postcode.find_by_postcode(pcode)
-		locations = Location.all
-		measurements = Measurement.all
-		measurements_needed = []
+		locations_needed = Location.where(postcode_id: postcode.id)
 
 		date.match /(\d{2})-(\d{2})-(\d{4})/
 		time = Time.new($3,$2,$1)
-
-		locations.collect do |l|
-			if l.postcode_id == postcode.id
-				locations_needed.push(l)
-			end
-		end
 
 		locations_info_all = locations_needed.collect do |l|
 			measure_total = []
@@ -50,12 +38,12 @@ class Extractor
 					}.as_json
 	end
 
-	def self.data_by_loc_json loctionId, date
+	def self.data_by_loc_json(loction_id, date)
 		date.match /(\d{2})-(\d{2})-(\d{4})/
 		time = Time.new($3,$2,$1)
 
-		measurements_data = Measurement.get_data_by_loc(loctionId, time)
-		measurement_now = Measurement.get_data_in_30min(loctionId)
+		measurements_data = Measurement.get_data_by_loc(loction_id, time)
+		measurement_now = Measurement.get_data_in_30min(loction_id)
 		measure_latest = measurement_now.last
 		measurement_json=[]
 
@@ -164,6 +152,7 @@ class Extractor
 		}
 
 		return locations_hash
+<<<<<<< HEAD
 	end
 
 	def self.locations_to_hash
@@ -190,5 +179,7 @@ class Extractor
 		}
 
 		return locations_hash
+=======
+>>>>>>> 66659c80afe0da8eba2ed6cd8e6194ae469d45cb
 	end
 end
