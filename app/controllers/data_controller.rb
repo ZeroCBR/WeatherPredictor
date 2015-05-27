@@ -1,19 +1,13 @@
 require 'json'
-
 require_relative '../../lib/extract_data'
 require_relative '../../lib/formater'
-
 
 class DataController < ApplicationController
 	def data_by_pcode
 		pcode = params[:post_code]
 		date = params[:date]
-
-
-		
 		output = Extractor.by_pcode(pcode,date)
-
-		render plain: output.inspect
+		render json: output
 	end
 
 
