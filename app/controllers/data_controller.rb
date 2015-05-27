@@ -10,6 +10,13 @@ class DataController < ApplicationController
 		render json: output
 	end
 
+	def data_by_pcode_table
+  @pcode = params[:post_code]
+		@date_to_search = params[:date]
+		data_hash = Extractor.by_pcode(@pcode,@date_to_search)
+		@locations_needed = data_hash["locations"]
+	end
+
 
 	def data_by_loc
 		loc_name = params[:location_id]
