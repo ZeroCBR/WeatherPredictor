@@ -10,6 +10,7 @@ class DataController < ApplicationController
 		respond_to do |format|
    format.html
    format.json { render json: @locations_needed }
+  end
 		
 	end
 	
