@@ -1,5 +1,5 @@
-<h1>Data by Location</h1>
-
+<h2>Data by Location</h2>
+<% if @hash_by_loc != {} %>
 
 <h4>Date: <%= @hash_by_loc["date"] %></h4>
 <h4>current_temp: <%= @hash_by_loc["current_temp"] %></h4>
@@ -30,4 +30,7 @@
 	</thead>
 
 </table>
-
+<% else %>
+<br>
+<h4>This location does not exist!</h4>
+<% end %>
