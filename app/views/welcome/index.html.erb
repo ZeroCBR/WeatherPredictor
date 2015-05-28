@@ -24,4 +24,25 @@
 	  </div>
 	</form>
   </div>
+
+  <div class="col-xs-12">
+	<form class="form-inline" method="get">
+	  <div class="form-group">
+		<label class="sr-only" for="location_id">Location Id</label>
+		<input type="text" class="form-control" name="location_id" id="location_id">
+		<label class="sr-only" for="date">Date</label>
+		<input type="datetime" class="form-control" name="date" id="date">
+		<div  class="btn btn-primary" onclick="call_data_loc()">Search</div>
+	  </div>
+	</form>
+  </div>
+  <script type="text/javascript">
+	function call_data_loc(){
+		var url = "/weather/data/"
+		var location_id = document.getElementById("location_id").value;
+		var date_input = document.getElementById("date").value;
+		url = url + location_id + "/" + date_input;
+		window.location = url;
+	}
+  </script>
 </div>
