@@ -21,8 +21,10 @@ class PredictController < ApplicationController
 	def predict_by_postcode
 		postcode = params[:post_code]
 		period = params[:period]
-		output = Extractor.predict_by_postcode(postcode, period)
-		render json: output
+		@predict_by_pcode = Extractor.predict_by_postcode(postcode, period)
+		respond_to do |format|
+   format.html
+   format.json { render json: @predict_by_pcode }
 	end
 
 	private

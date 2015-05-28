@@ -1,0 +1,60 @@
+<h2>Locations</h2>
+<h12>Post Code:<%= @pcode%></h12>
+
+<h12>Date:<%= @date_to_search%></h12>
+
+
+	 <% if @predict_by_pcode != nil %>
+
+
+<table class="table table-bordered"  width=100% >
+	<thead>
+		<tr>
+		<th rowspan="2" width="100"><p align="center">Location</p></th>
+			<th rowspan="2" width="100"><p align="center">Time</p></th>
+			<th colspan="2" id="tp"width="100"><p align="center">Temperature</p></th>
+			<th colspan="2" id="pc"width="100"><p align="center">Precip</p></th>
+			<th colspan="2" id="wd"width="100"><p align="center">Wind Direction</p></th>
+			<th colspan="2" id="ws"width="100"><p align="center">Wind Speed</p></th>
+		</tr>
+		<tr>
+			<th headers="tp">Predicted Temperature</th>
+			<th headers="tp">Temperature Probability</th>
+			<th headers="pc">Predicted Precip</th>
+			<th headers="pc">Precip Probability</th>
+			<th headers="wd">Predicted Wind Direction</th>
+			<th headers="wd">Wind Direction Probability</th>
+			<th headers="ws">Predicted Wind Speed</th>
+			<th headers="ws">Temperature Probability</th>
+		</tr>
+	</thead>
+
+	<tbody>		
+
+			<% @predict_by_pcode.each do |location|%>
+			<% location["predictions"].each_with_index do |prediction,index| %>
+			<% index=index*10 %>
+		<tr>
+			<td><%= location["location_id"] %></td>
+			<td><%= prediction["#{index}"]["time"] %></td>
+			<td><%=	prediction["#{index}"]["temp"]["value"] %></td>
+			<td><%=	prediction["#{index}"]["temp"]["probability"] %></td>
+			<td><%= prediction["#{index}"]["rain"]["value"] %></td>
+			<td><%= prediction["#{index}"]["rain"]["probability"] %></td>
+			<td><%= prediction["#{index}"]["windDir"]["value"] %></td>
+			<td><%= prediction["#{index}"]["windDir"]["probability"] %></td>
+			<td><%= prediction["#{index}"]["windSpeed"]["value"] %></td>
+			<td><%= prediction["#{index}"]["windSpeed"]["probability"] %></td>
+		</tr>
+		<% end %>
+		<% end %>
+					</tbody>
+					</table>
+					
+					<%else%>
+						<h2>No Data</h2>
+		<% end %>
+	</tbody>
+</table>
+
+<a href="/welcome/index">Back</a>
