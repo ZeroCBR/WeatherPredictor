@@ -4,9 +4,9 @@ require_relative '../../lib/formater'
 
 class DataController < ApplicationController
 	def data_by_pcode
-		pcode = params[:post_code]
-		date = params[:date]
-		@locations_needed = Extractor.data_loc_by_pcode(pcode,date)
+		@pcode = params[:post_code]
+		@date_to_search = params[:date]
+		@locations_needed = Extractor.data_loc_by_pcode(@pcode,@date_to_search)
 		@location_info = @locations_needed["locations"]
 		respond_to do |format|
    format.html
