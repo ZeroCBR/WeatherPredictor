@@ -2,12 +2,12 @@
 
 <div class="row">
   <div class="col-xs-12">
-	<form class="form-inline" method="get">
+	<form class="form" method="get">
 	  <div class="form-group">
 		<label for="post_code">Post Code</label>
-		<input type="text" class="form-control" name="post_code" id="postcode">
+		<input type="text" class="form-control" name="post_code" id="location_postcode">
 		<label for="date">Date</label>
-		<input type="datetime" class="form-control" name="date" id="postcode_date">
+		<input type="datetime" class="form-control" name="date" id="location_postcode_date">
 		<div class="btn btn-primary" onclick="call_data_postcode()">Search</div>
 	  </div>
 	</form>
@@ -17,7 +17,7 @@
 <hr />
 <div class="row">
   <div class="col-xs-12">
-	<form class="form-inline" method="get">
+	<form class="form" method="get">
 	  <div class="form-group">
 		<label for="location_id">Location Id</label>
 		<input type="text" class="form-control" name="location_id" id="location_id">
@@ -27,12 +27,40 @@
 	  </div>
 	</form>
   </div>
-
+</div>
+<div class="row">
+  <div class="col-xs-12">
+	<form class="form" method="get">
+	  <div class="form-group">
+		<label for="latitude">Latitude</label>
+		<input type="text" class="form-control" name="latitude" id="latitude">
+		<label for="longitude">Longitude</label>
+		<input type="text" class="form-control" name="longitude" id="longitude">
+		<label for="date">Period</label>
+		<input type="datetime" class="form-control" name="date" id="longitude_period">
+		<div  class="btn btn-primary" onclick="call_predict_loc()">Search</div>
+	  </div>
+	</form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+	<form class="form" method="get">
+	  <div class="form-group">
+		<label for="latitude">Latitude</label>
+		<input type="text" class="form-control" name="post_code" id="post_code">
+		<label for="date">Period</label>
+		<input type="datetime" class="form-control" name="date" id="postcode_period">
+		<div  class="btn btn-primary" onclick="call_predict_postcode()">Search</div>
+	  </div>
+	</form>
+  </div>
+</div>
   <script type="text/javascript">
 	function call_data_postcode(){
 		var url = "/weather/data/"
-		var post_code = document.getElementById("postcode").value;
-		var date_input = document.getElementById("postcode_date").value;
+		var post_code = document.getElementById("location_postcode").value;
+		var date_input = document.getElementById("location_postcode_date").value;
 		url = url + post_code + "/" + date_input;
 		window.location = url;
 	}
@@ -43,5 +71,19 @@
 		url = url + location_id + "/" + date_input;
 		window.location = url;
 	}
+	function call_predict_loc(){
+		var url = "/weather/prediction/"
+		var latitude = document.getElementById("latitude").value;
+		var longitude = document.getElementById("longitude").value;
+		var date_input = document.getElementById("longitude_period").value;
+		url = url + latitude + "/" + longitude + "/" + date_input;
+		window.location = url;
+	}
+	function call_predict_postcode(){
+		var url = "/weather/prediction/"
+		var post_code = document.getElementById("post_code").value;
+		var date_input = document.getElementById("postcode_period").value;
+		url = url + post_code + "/" + date_input;
+		window.location = url;
+	}
   </script>
-</div>
