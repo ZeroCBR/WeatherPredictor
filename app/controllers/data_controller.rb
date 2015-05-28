@@ -22,12 +22,14 @@ class DataController < ApplicationController
 		loc_name = params[:location_id]
 		date = params[:date]
 		location = Location.find_by_name(loc_name)
-		loctionId = location.id
+		if location != nil
+			loctionId = location.id
+			ext_by_loc = Extractor.data_by_loc_id(loctionId, date)
+			@hash_by_loc = ext_by_loc
+		else
+			@hash_by_loc = Hash.new
+		end
 
-
-		ext_by_loc = Extractor.data_by_loc_id(loctionId, date)
-
-		@hash_by_loc = ext_by_loc
 
 		respond_to do |format|
    format.html
