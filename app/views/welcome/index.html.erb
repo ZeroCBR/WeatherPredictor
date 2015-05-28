@@ -60,37 +60,104 @@
 	</form>
   </div>
 </div>
-  <script type="text/javascript">
+<script type="text/javascript">
 	function call_data_postcode(){
 		var url = "/weather/data/"
 		var post_code = document.getElementById("location_postcode").value;
-		var date_input = document.getElementById("location_postcode_date").value;
-		url = url + post_code + "/" + date_input;
-		window.location = url;
+		if (!check_postcode_validation(post_code)) {
+			window.alert("Postcode Error");
+		}
+		else
+		{
+			var date_input = document.getElementById("location_postcode_date").value;
+			if (!check_date_validation(date_input)) {
+				window.alert("Date Error");
+			}
+			else {
+				url = url + post_code + "/" + date_input;
+				window.location = url;
+			}
+		}
 	}
 	function call_data_loc(){
 		var url = "/weather/data/"
 		var location_id = document.getElementById("location_id").value;
-		var date_input = document.getElementById("location_date").value;
-		url = url + location_id + "/" + date_input;
-		window.location = url;
+		if (!check_location_validation(location_id)) {
+			window.alert("Location Error");
+		}
+		else {
+			var date_input = document.getElementById("location_date").value;
+			if (!check_date_validation(date_input)) {
+				window.alert("Date Error");
+			}
+			else {
+				url = url + location_id + "/" + date_input;
+				window.location = url;
+			}
+		}
 	}
 	function call_predict_loc(){
 		var url = "/weather/prediction/"
 		var latitude = document.getElementById("latitude").value;
-		var longitude = document.getElementById("longitude").value;
-		var date_input = document.getElementById("longitude_period").value;
-		url = url + latitude + "/" + longitude + "/" + date_input;
-		window.location = url;
+		if (!check_latitude_validation(latitude)) {
+			window.alert("Latitude Error");
+		}
+		else {
+			var longitude = document.getElementById("longitude").value;
+			if (!check_longitude_validation(longitude)) {
+				window.alert("Longitude Error")
+			}
+			else {
+				var date_input = document.getElementById("longitude_period").value;
+				if (!check_period_validation(date_input)) {
+					window.alert("Period Error")
+				}
+				else {
+					url = url + latitude + "/" + longitude + "/" + date_input;
+					window.location = url;
+				}
+			}
+		}
 	}
 	function call_predict_postcode(){
 		var url = "/weather/prediction/"
 		var post_code = document.getElementById("post_code").value;
-		var date_input = document.getElementById("postcode_period").value;
-		url = url + post_code + "/" + date_input;
-		window.location = url;
+		if (!check_postcode_validation(post_code)) {
+			window.alert("Postcode Error");
+		}
+		else{
+			var date_input = document.getElementById("postcode_period").value;
+			if (!check_period_validation(date_input)) {
+				window.alert("Period Error")
+			}
+			else {
+				url = url + post_code + "/" + date_input;
+				window.location = url;
+			}
+		}
 	}
-	function check_validation(){
-
+	function check_date_validation(value){
+		var re = /((0[1-9]|[1-2][0-9]|3[0-1])-(01|03|05|07|08|10|12)|((0[1-9]|[1-2][0-9]|30)-(04|06|09|11))|((0[1-9]|1[0-9]|2[0-8])-02))-\d{4}/;
+		return re.exec(value);
 	}
-  </script>
+	function check_latitude_validation(value){
+		var re = /-[3][3-9](\.\d+)?/;
+		return re.exec(value);
+	}
+	function check_longitude_validation(value){
+		var re = /[1][4][0-9](\.\d+)?/;
+		return re.exec(value);
+	}
+	function check_postcode_validation(value){
+		var re = /3\d{3}/;
+		return re.exec(value);
+	};
+	function check_period_validation(value){
+		var re = /10|30|60|120|180/;
+		return re.exec(value);
+	}
+	function check_location_validation(value){
+		var re = /[A-Z].+/;
+		return re.exec(value);
+	}
+</script>
