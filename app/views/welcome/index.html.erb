@@ -2,45 +2,44 @@
 
 <div class="row">
   <div class="col-xs-12">
-	<form class="form-inline" method="get" action="/welcome/data_pcode">
+	<form class="form-inline" method="get">
 	  <div class="form-group">
-		<label class="sr-only" for="post_code">Post COde</label>
-		<input type="text" class="form-control" name="post_code">
-		<label class="sr-only" for="date">Date</label>
-		<input type="datetime" class="form-control" name="date">
-		<button type="submit" class="btn btn-primary">Search</button>
+		<label for="post_code">Post Code</label>
+		<input type="text" class="form-control" name="post_code" id="postcode">
+		<label for="date">Date</label>
+		<input type="datetime" class="form-control" name="date" id="postcode_date">
+		<div class="btn btn-primary" onclick="call_data_postcode()">Search</div>
 	  </div>
 	</form>
   </div>
-
-  <div class="col-xs-12">
-	<form class="form-inline" method="get" action="/welcome/data_loc/">
-	  <div class="form-group">
-		<label class="sr-only" for="location_id">Location Id</label>
-		<input type="text" class="form-control" name="location_id">
-		<label class="sr-only" for="date">Date</label>
-		<input type="datetime" class="form-control" name="date">
-		<button type="submit" class="btn btn-primary">Search</button>
-	  </div>
-	</form>
-  </div>
-
+</div>
+<br />
+<hr />
+<div class="row">
   <div class="col-xs-12">
 	<form class="form-inline" method="get">
 	  <div class="form-group">
-		<label class="sr-only" for="location_id">Location Id</label>
+		<label for="location_id">Location Id</label>
 		<input type="text" class="form-control" name="location_id" id="location_id">
-		<label class="sr-only" for="date">Date</label>
-		<input type="datetime" class="form-control" name="date" id="date">
+		<label for="date">Date</label>
+		<input type="datetime" class="form-control" name="date" id="location_date">
 		<div  class="btn btn-primary" onclick="call_data_loc()">Search</div>
 	  </div>
 	</form>
   </div>
+
   <script type="text/javascript">
+	function call_data_postcode(){
+		var url = "/weather/data/"
+		var post_code = document.getElementById("postcode").value;
+		var date_input = document.getElementById("postcode_date").value;
+		url = url + post_code + "/" + date_input;
+		window.location = url;
+	}
 	function call_data_loc(){
 		var url = "/weather/data/"
 		var location_id = document.getElementById("location_id").value;
-		var date_input = document.getElementById("date").value;
+		var date_input = document.getElementById("location_date").value;
 		url = url + location_id + "/" + date_input;
 		window.location = url;
 	}
