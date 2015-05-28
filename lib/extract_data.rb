@@ -85,21 +85,26 @@ class Extractor
 			location= Location.location_similar(latitude, longitude)
 		end
 		puts(location)
-		predictions = self.predict(location, period)
-		main_hash = {'latitude' => latitude, 'longitude' => longitude, 'predictions' => predictions}
-		return main_hash
+		hash_predictions, array_predictions = self.predict(location, period)
+		main_hash = {'latitude' => latitude, 'longitude' => longitude, 'predictions' => hash_predictions}
+		main_array = {'latitude' => latitude, 'longitude' => longitude, 'predictions' => array_predictions}
+
+		return main_hash, main_array
 	end
 
 	def self.predict_by_postcode(pcode, period)
 		postcode = Postcode.find_by_postcode(pcode)
 		if postcode != nil
 			location_list = Location.where(postcode_id: postcode.id)
-			records = []
+			hash_records = []
+			array_records = []
 			location_list.each do
 				|location|
-				records.push({'location_id' => location.name, 'predictions' => self.predict([location],period)})
+				hash_record, array_record =self.predict([location],period)
+				hash_records.push({'location_id' => location.name, 'predictions' => hash_record})
+				array_records.push({'location_id' => location.name, 'predictions' => array_record})
 			end
-			return records
+			return hash_records, array_records
 		else
 			return []
 		end
@@ -111,9 +116,11 @@ class Extractor
 		precip=[]
 		windDir=[]
 		windSpeed=[]
-		predictions={}
+		hash_predictions={}
+		array_predictions=[]
 		current=Parser.data_for_target_from_api(location).first
-		predictions.merge!({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
+		hash_predictions.merge!({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir.to_i%360, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
+		array_predictions.push({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir.to_i%360, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
 		measurements=Measurement.get_history(location)
 		measurements.each do |measurement|
 			time.push(measurement.time.to_i)
@@ -131,9 +138,10 @@ class Extractor
 		pwindSpeed=PredictionRegression.new(time,windSpeed, period.to_i)
 		predict_windSpeed, pro_windSpeed=pwindSpeed.executeRegression
 		(1..period.to_i/10).each do |i|
-			predictions.merge!({"#{i*10}"=>{"time"=>current.time+i*10*60, "rain"=>{"value"=>predict_precip[i-1], "probability"=>pro_precip[i-1]}, "temp"=>{"value"=>predict_temp[i-1], "probability"=>pro_temp[i-1]}, "windDir"=>{"value"=>predict_windDir[i-1], "probability"=>pro_windDir[i-1]}, "windSpeed"=>{"value"=>predict_windSpeed[i-1], "probability"=>pro_windSpeed[i-1]}}})
+			hash_predictions.merge!({"#{i*10}"=>{"time"=>Format.time_dd_mm_yyyy(current.time+i*10*60), "rain"=>{"value"=>predict_precip[i-1].round(4), "probability"=>pro_precip[i-1].round(4)}, "temp"=>{"value"=>predict_temp[i-1].round(4), "probability"=>pro_temp[i-1].round(4)}, "windDir"=>{"value"=>predict_windDir[i-1].to_i%360.round(4), "probability"=>pro_windDir[i-1].round(4)}, "windSpeed"=>{"value"=>predict_windSpeed[i-1].round(4), "probability"=>pro_windSpeed[i-1].round(4)}}})
+			array_predictions.push({"#{i*10}"=>{"time"=>Format.time_dd_mm_yyyy(current.time+i*10*60), "rain"=>{"value"=>predict_precip[i-1].round(4), "probability"=>pro_precip[i-1].round(4)}, "temp"=>{"value"=>predict_temp[i-1].round(4), "probability"=>pro_temp[i-1].round(4)}, "windDir"=>{"value"=>predict_windDir[i-1].to_i%360.round(4), "probability"=>pro_windDir[i-1].round(4)}, "windSpeed"=>{"value"=>predict_windSpeed[i-1].round(4), "probability"=>pro_windSpeed[i-1].round(4)}}})
 		end
-		return predictions
+		return hash_predictions, array_predictions
 	end
 
 	def self.locations_to_hash

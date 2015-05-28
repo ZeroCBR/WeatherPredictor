@@ -7,24 +7,20 @@ class PredictController < ApplicationController
 		latitude=params[:lat]
 		longitude=params[:long]
 		period=params[:period]
-		output = Extractor.predict_by_lat_long(latitude, longitude, period)	
-		render json: output			
-	end
-
-	def predict_by_LatLon_table
-		latitude=params[:lat]
-		longitude=params[:long]
-		period=params[:period]
-		@table_hash = Extractor.predict_by_lat_long(latitude, longitude, period)	
+		table_json, @table_hash = Extractor.predict_by_lat_long(latitude, longitude, period)
+		respond_to do |format|
+   format.html
+   format.json { render json: table_json }
+  end		
 	end
 
 	def predict_by_postcode
 		postcode = params[:post_code]
 		period = params[:period]
-		@predict_by_pcode = Extractor.predict_by_postcode(postcode, period)
+		predict_by_pcode_json, @predict_by_pcode = Extractor.predict_by_postcode(postcode, period)
 		respond_to do |format|
    format.html
-   format.json { render json: @predict_by_pcode }
+   format.json { render json: predict_by_pcode_json }
   end
 	end
 
