@@ -25,6 +25,7 @@ class PredictController < ApplicationController
 		respond_to do |format|
    format.html
    format.json { render json: @predict_by_pcode }
+  end
 	end
 
 	private
