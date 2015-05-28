@@ -1,7 +1,11 @@
 <h2>Locations</h2>
-<h12>Post Code:<font color="red"><%= @pcode%></font></h12>
+<h12>Post Code:<%= @pcode%></h12>
 
-<h12>Date:<font color="red"><%= @date_to_search%></font></h12>
+<h12>Date:<%= @date_to_search%></h12>
+
+
+	 <% if @locations_needed != nil %>
+
 
 <table class="table table-bordered"  width=100% >
 	<thead>
@@ -17,8 +21,7 @@
 	</tr>
 	</thead>
 
-	<tbody>
-		<% @location_info.each do |location| %>
+	<tbody>		<% @locations_needed.each do |location|%>
 		<tr>
 			<td><%= location["id"] %></td>
 			<td><%=	location["lat"] %></td>
@@ -49,9 +52,11 @@
 				
 			</td>
 		</tr>
+		<%end%>
+					<%else%>
+						<h2>No Data</h2>
 		<% end %>
 	</tbody>
 </table>
 
 <a href="/welcome/index">Back</a>
-
