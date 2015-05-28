@@ -4,7 +4,7 @@
 <h12>Date:<%= @date_to_search%></h12>
 
 
-	 <% if @locations_needed != nil %>
+	 <% if @location_info != nil %>
 
 
 <table class="table table-bordered"  width=100% >
@@ -21,7 +21,7 @@
 	</tr>
 	</thead>
 
-	<tbody>		<% @locations_needed.each do |location|%>
+	<tbody>		<% @location_info.each do |location|%>
 		<tr>
 			<td><%= location["id"] %></td>
 			<td><%=	location["lat"] %></td>
