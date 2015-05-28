@@ -111,9 +111,9 @@ class Extractor
 		precip=[]
 		windDir=[]
 		windSpeed=[]
-		predictions=[]
+		predictions={}
 		current=Parser.data_for_target_from_api(location).first
-		predictions.push({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
+		predictions.merge!({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
 		measurements=Measurement.get_history(location)
 		measurements.each do |measurement|
 			time.push(measurement.time.to_i)
@@ -131,10 +131,9 @@ class Extractor
 		pwindSpeed=PredictionRegression.new(time,windSpeed, period.to_i)
 		predict_windSpeed, pro_windSpeed=pwindSpeed.executeRegression
 		(1..period.to_i/10).each do |i|
-			predictions.push({"#{i*10}"=>{"time"=>current.time+i*10*60, "rain"=>{"value"=>predict_precip[i-1], "probability"=>pro_precip[i-1]}, "temp"=>{"value"=>predict_temp[i-1], "probability"=>pro_temp[i-1]}, "windDir"=>{"value"=>predict_windDir[i-1], "probability"=>pro_windDir[i-1]}, "windSpeed"=>{"value"=>predict_windSpeed[i-1], "probability"=>pro_windSpeed}}})
+			predictions.merge!({"#{i*10}"=>{"time"=>current.time+i*10*60, "rain"=>{"value"=>predict_precip[i-1], "probability"=>pro_precip[i-1]}, "temp"=>{"value"=>predict_temp[i-1], "probability"=>pro_temp[i-1]}, "windDir"=>{"value"=>predict_windDir[i-1], "probability"=>pro_windDir[i-1]}, "windSpeed"=>{"value"=>predict_windSpeed[i-1], "probability"=>pro_windSpeed[i-1]}}})
 		end
 		return predictions
-
 	end
 
 	def self.locations_to_hash
