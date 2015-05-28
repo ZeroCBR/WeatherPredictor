@@ -17,6 +17,6 @@ scheduler = Rufus::Scheduler.new
 
 # Spider.extract
 
-scheduler.every '60000000s' do
+scheduler.every '600s' do
 	Spider.extract
 end
