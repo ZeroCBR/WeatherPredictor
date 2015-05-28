@@ -7,6 +7,7 @@ class DataController < ApplicationController
 		pcode = params[:post_code]
 		date = params[:date]
 		@locations_needed = Extractor.data_loc_by_pcode(pcode,date)
+		@location_info = @locations_needed["locations"]
 		respond_to do |format|
    format.html
    format.json { render json: @locations_needed }
