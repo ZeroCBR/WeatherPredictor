@@ -1,15 +1,15 @@
 class ApiKeyDispatcher
   def initialize(keys)
     @key_pool = keys
-    @key_index_map = Time.now.to_i % @key_pool.length
-    @current_index = @key_index_map
+    @initial_index = Time.now.to_i % @key_pool.length
+    @current_index = @initial_index
     @key_count = 1
   end
 
   def get_current_key
     puts("Current:#{@current_index}")
-    puts("Current:#{@key_index_map}")
-    puts("Current:#{@key_count}")
+    puts("Initial:#{@initial_index}")
+    puts("Count:#{@key_count}")
     return @key_pool[@current_index]
   end
 
