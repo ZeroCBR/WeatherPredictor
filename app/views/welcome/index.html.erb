@@ -4,9 +4,9 @@
   <div class="col-xs-12">
 	<form class="form" method="get">
 	  <div class="form-group">
-		<label for="post_code">Post Code</label>
+		<label for="location_postcode">Post Code</label>
 		<input type="text" class="form-control" name="post_code" id="location_postcode">
-		<label for="date">Date</label>
+		<label for="location_postcode_date">Date</label>
 		<input type="datetime" class="form-control" name="date" id="location_postcode_date">
 		<div class="btn btn-primary" onclick="call_data_postcode()">Search</div>
 	  </div>
@@ -21,7 +21,7 @@
 	  <div class="form-group">
 		<label for="location_id">Location Id</label>
 		<input type="text" class="form-control" name="location_id" id="location_id">
-		<label for="date">Date</label>
+		<label for="location_date">Date</label>
 		<input type="datetime" class="form-control" name="date" id="location_date">
 		<div  class="btn btn-primary" onclick="call_data_loc()">Search</div>
 	  </div>
@@ -38,7 +38,7 @@
 		<input type="text" class="form-control" name="latitude" id="latitude">
 		<label for="longitude">Longitude</label>
 		<input type="text" class="form-control" name="longitude" id="longitude">
-		<label for="date">Period</label>
+		<label for="longitude_period">Period</label>
 		<input type="datetime" class="form-control" name="date" id="longitude_period">
 		<div  class="btn btn-primary" onclick="call_predict_loc()">Search</div>
 	  </div>
@@ -51,9 +51,9 @@
   <div class="col-xs-12">
 	<form class="form" method="get">
 	  <div class="form-group">
-		<label for="latitude">Postcode</label>
+		<label for="post_code">Postcode</label>
 		<input type="text" class="form-control" name="post_code" id="post_code">
-		<label for="date">Period</label>
+		<label for="postcode_period">Period</label>
 		<input type="datetime" class="form-control" name="date" id="postcode_period">
 		<div  class="btn btn-primary" onclick="call_predict_postcode()">Search</div>
 	  </div>
@@ -62,7 +62,7 @@
 </div>
 <script type="text/javascript">
 	function call_data_postcode(){
-		var url = "/weather/data/"
+		var url = "/weather/data/";
 		var post_code = document.getElementById("location_postcode").value;
 		if (!check_postcode_validation(post_code)) {
 			window.alert("Postcode Error");
@@ -80,7 +80,7 @@
 		}
 	}
 	function call_data_loc(){
-		var url = "/weather/data/"
+		var url = "/weather/data/";
 		var location_id = document.getElementById("location_id").value;
 		if (!check_location_validation(location_id)) {
 			window.alert("Location Error");
@@ -97,7 +97,7 @@
 		}
 	}
 	function call_predict_loc(){
-		var url = "/weather/prediction/"
+		var url = "/weather/prediction/";
 		var latitude = document.getElementById("latitude").value;
 		if (!check_latitude_validation(latitude)) {
 			window.alert("Latitude Error");
@@ -120,7 +120,7 @@
 		}
 	}
 	function call_predict_postcode(){
-		var url = "/weather/prediction/"
+		var url = "/weather/prediction/";
 		var post_code = document.getElementById("post_code").value;
 		if (!check_postcode_validation(post_code)) {
 			window.alert("Postcode Error");
@@ -151,7 +151,7 @@
 	function check_postcode_validation(value){
 		var re = /3\d{3}/;
 		return re.exec(value);
-	};
+	}
 	function check_period_validation(value){
 		var re = /10|30|60|120|180/;
 		return re.exec(value);
