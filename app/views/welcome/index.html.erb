@@ -2,12 +2,13 @@
 
 <div class="row">
   <div class="col-xs-12">
+  	<h3>Search by Postcode</h3>
 	<form class="form" method="get">
 	  <div class="form-group">
 		<label for="location_postcode">Post Code</label>
-		<input type="text" class="form-control" name="post_code" id="location_postcode">
+		<input type="text" class="form-control" name="post_code" id="location_postcode" placeholder="3000-3999">
 		<label for="location_postcode_date">Date</label>
-		<input type="datetime" class="form-control" name="date" id="location_postcode_date">
+		<input type="datetime" class="form-control" name="date" id="location_postcode_date" placeholder="dd-mm-yy">
 		<div class="btn btn-primary" onclick="call_data_postcode()">Search</div>
 	  </div>
 	</form>
@@ -17,12 +18,13 @@
 <hr />
 <div class="row">
   <div class="col-xs-12">
+  	<h3>Search by Location Name</h3>
 	<form class="form" method="get">
 	  <div class="form-group">
-		<label for="location_id">Location Id</label>
-		<input type="text" class="form-control" name="location_id" id="location_id">
+		<label for="location_id">Location Name</label>
+		<input type="text" class="form-control" name="location_id" id="location_id" placeholder="location name">
 		<label for="location_date">Date</label>
-		<input type="datetime" class="form-control" name="date" id="location_date">
+		<input type="datetime" class="form-control" name="date" id="location_date" placeholder="dd-mm-yy">
 		<div  class="btn btn-primary" onclick="call_data_loc()">Search</div>
 	  </div>
 	</form>
@@ -32,14 +34,15 @@
 <hr />
 <div class="row">
   <div class="col-xs-12">
+  	<h3>Predict by Latitude and Longitude</h3>
 	<form class="form" method="get">
 	  <div class="form-group">
 		<label for="latitude">Latitude</label>
-		<input type="text" class="form-control" name="latitude" id="latitude">
+		<input type="text" class="form-control" name="latitude" id="latitude" placeholder="-33 ~ -39.99">
 		<label for="longitude">Longitude</label>
-		<input type="text" class="form-control" name="longitude" id="longitude">
+		<input type="text" class="form-control" name="longitude" id="longitude" placeholder="140 ~ 149.99">
 		<label for="longitude_period">Period</label>
-		<input type="datetime" class="form-control" name="date" id="longitude_period">
+		<input type="datetime" class="form-control" name="date" id="longitude_period" placeholder="10, 30 , 60, 120, 180">
 		<div  class="btn btn-primary" onclick="call_predict_loc()">Search</div>
 	  </div>
 	</form>
@@ -49,12 +52,13 @@
 <hr />
 <div class="row">
   <div class="col-xs-12">
+  	<h3>Predict by Postcode</h3>
 	<form class="form" method="get">
 	  <div class="form-group">
 		<label for="post_code">Postcode</label>
-		<input type="text" class="form-control" name="post_code" id="post_code">
+		<input type="text" class="form-control" name="post_code" id="post_code" placeholder="3000-3999">
 		<label for="postcode_period">Period</label>
-		<input type="datetime" class="form-control" name="date" id="postcode_period">
+		<input type="datetime" class="form-control" name="date" id="postcode_period" placeholder="10, 30 , 60, 120, 180">
 		<div  class="btn btn-primary" onclick="call_predict_postcode()">Search</div>
 	  </div>
 	</form>
@@ -91,7 +95,7 @@
 				window.alert("Date Error");
 			}
 			else {
-				url = url + location_id + "/" + date_input;
+				url = url + location_id.toUpperCase() + "/" + date_input;
 				window.location = url;
 			}
 		}
@@ -157,7 +161,7 @@
 		return re.exec(value);
 	}
 	function check_location_validation(value){
-		var re = /[A-Z].+/;
+		var re = /[A-Za-z].+/;
 		return re.exec(value);
 	}
 </script>
