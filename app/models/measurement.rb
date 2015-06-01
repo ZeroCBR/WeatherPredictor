@@ -10,7 +10,6 @@ class Measurement < ActiveRecord::Base
 	end
 
 	def  self.get_data_in_30min(loctionId)
-		self.where(location_id: loctionId, time: ((Time.now-1800)..Time.now)
+		self.where(location_id: loctionId, time: ((Time.now-1800)..Time.now))
 	end
-
 end

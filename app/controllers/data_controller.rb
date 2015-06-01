@@ -15,9 +15,9 @@ class DataController < ApplicationController
 	end
 	
 	def data_by_loc
-		loc_name = params[:location_id]
+		@loc_name = params[:location_id]
 		date = params[:date]
-		location = Location.find_by_name(loc_name)
+		location = Location.find_by_name(@loc_name)
 		if location != nil
 			loctionId = location.id
 			@hash_by_loc = Extractor.data_by_loc_id(loctionId, date)
