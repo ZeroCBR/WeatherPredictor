@@ -3,6 +3,7 @@
 <h4>Latitude: <%= @table_hash["latitude"] %></h4>
 <h4>Longitude: <%= @table_hash["longitude"] %></h4>
 
+<% if @table_hash["predictions"].size!=0 %>
 <table class="table table-bordered" >
 	<thead>
 		<tr>
@@ -24,6 +25,7 @@
 		</tr>
 
 		<tbody>
+		
 		<% @table_hash["predictions"].each_with_index do |prediction, index| %>
 		<tr>
 			<% index=index*10 %>
@@ -37,6 +39,10 @@
 			<td><%= prediction["#{index}"]["windSpeed"]["value"] %></td>
 			<td><%= prediction["#{index}"]["windSpeed"]["probability"] %></td>
 		</tr>
+		<% end %>
+		<% else %>
+		<br>
+		<h4>Prediction Error - There are no data in past THREE days!</h4>
 		<% end %>
 	</thead>
 </table>

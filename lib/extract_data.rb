@@ -7,7 +7,6 @@ class Extractor
 		if postcode != nil
 			locations_needed = Location.where(postcode_id: postcode.id)
 
-
 			date.match /(\d{2})-(\d{2})-(\d{4})/
 			time = Time.new($3,$2,$1)
 
@@ -118,29 +117,31 @@ class Extractor
 		windSpeed=[]
 		hash_predictions={}
 		array_predictions=[]
-		current=Parser.data_for_target_from_api(location).first
-		hash_predictions.merge!({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir.to_i%360, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
-		array_predictions.push({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir.to_i%360, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
-		measurements=Measurement.get_history(location)
-		measurements.each do |measurement|
-			time.push(measurement.time.to_i)
-			temp.push(measurement.temp.to_f)
-			precip.push(measurement.precip.to_f)
-			windDir.push(measurement.windDir.to_i)
-			windSpeed.push(measurement.windSpeed.to_f)
-		end
-		ptemp=PredictionRegression.new(time,temp, period.to_i)
-		predict_temp, pro_temp=ptemp.executeRegression
-		pprecip=PredictionRegression.new(time,precip, period.to_i)
-		predict_precip, pro_precip=pprecip.executeRegression
-		pwindDir=PredictionRegression.new(time,windDir, period.to_i)
-		predict_windDir, pro_windDir=pwindDir.executeRegression
-		pwindSpeed=PredictionRegression.new(time,windSpeed, period.to_i)
-		predict_windSpeed, pro_windSpeed=pwindSpeed.executeRegression
-		(1..period.to_i/10).each do |i|
-			hash_predictions.merge!({"#{i*10}"=>{"time"=>Format.time_dd_mm_yyyy(current.time+i*10*60), "rain"=>{"value"=>predict_precip[i-1].round(4), "probability"=>pro_precip[i-1].round(4)}, "temp"=>{"value"=>predict_temp[i-1].round(4), "probability"=>pro_temp[i-1].round(4)}, "windDir"=>{"value"=>predict_windDir[i-1].to_i%360.round(4), "probability"=>pro_windDir[i-1].round(4)}, "windSpeed"=>{"value"=>predict_windSpeed[i-1].round(4), "probability"=>pro_windSpeed[i-1].round(4)}}})
-			array_predictions.push({"#{i*10}"=>{"time"=>Format.time_dd_mm_yyyy(current.time+i*10*60), "rain"=>{"value"=>predict_precip[i-1].round(4), "probability"=>pro_precip[i-1].round(4)}, "temp"=>{"value"=>predict_temp[i-1].round(4), "probability"=>pro_temp[i-1].round(4)}, "windDir"=>{"value"=>predict_windDir[i-1].to_i%360.round(4), "probability"=>pro_windDir[i-1].round(4)}, "windSpeed"=>{"value"=>predict_windSpeed[i-1].round(4), "probability"=>pro_windSpeed[i-1].round(4)}}})
-		end
+		if Measurement.get_history(location).size!=0
+			current=Parser.data_for_target_from_api(location).first
+			hash_predictions.merge!({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir.to_i%360, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})
+			array_predictions.push({"0"=>{"time"=>Format.time_dd_mm_yyyy(current.time), "rain"=>{"value"=>current.precip, "probability"=>"1"}, "temp"=>{"value"=>current.temp, "probability"=>"1"}, "windDir"=>{"value"=>current.windDir.to_i%360, "probability"=>"1"}, "windSpeed"=>{"value"=>current.windSpeed, "probability"=>"1"}}})		
+			measurements=Measurement.get_history(location)
+			measurements.each do |measurement|
+				time.push(measurement.time.to_i)
+				temp.push(measurement.temp.to_f)
+				precip.push(measurement.precip.to_f)
+				windDir.push(measurement.windDir.to_i)
+				windSpeed.push(measurement.windSpeed.to_f)
+			end
+			ptemp=PredictionRegression.new(time,temp, period.to_i)
+			predict_temp, pro_temp=ptemp.executeRegression
+			pprecip=PredictionRegression.new(time,precip, period.to_i)
+			predict_precip, pro_precip=pprecip.executeRegression
+			pwindDir=PredictionRegression.new(time,windDir, period.to_i)
+			predict_windDir, pro_windDir=pwindDir.executeRegression
+			pwindSpeed=PredictionRegression.new(time,windSpeed, period.to_i)
+			predict_windSpeed, pro_windSpeed=pwindSpeed.executeRegression
+			(1..period.to_i/10).each do |i|
+				hash_predictions.merge!({"#{i*10}"=>{"time"=>Format.time_dd_mm_yyyy(current.time+i*10*60), "rain"=>{"value"=>predict_precip[i-1].round(4), "probability"=>pro_precip[i-1].round(4)}, "temp"=>{"value"=>predict_temp[i-1].round(4), "probability"=>pro_temp[i-1].round(4)}, "windDir"=>{"value"=>predict_windDir[i-1].to_i%360.round(4), "probability"=>pro_windDir[i-1].round(4)}, "windSpeed"=>{"value"=>predict_windSpeed[i-1].round(4), "probability"=>pro_windSpeed[i-1].round(4)}}})
+				array_predictions.push({"#{i*10}"=>{"time"=>Format.time_dd_mm_yyyy(current.time+i*10*60), "rain"=>{"value"=>predict_precip[i-1].round(4), "probability"=>pro_precip[i-1].round(4)}, "temp"=>{"value"=>predict_temp[i-1].round(4), "probability"=>pro_temp[i-1].round(4)}, "windDir"=>{"value"=>predict_windDir[i-1].to_i%360.round(4), "probability"=>pro_windDir[i-1].round(4)}, "windSpeed"=>{"value"=>predict_windSpeed[i-1].round(4), "probability"=>pro_windSpeed[i-1].round(4)}}})
+			end
+		end		
 		return hash_predictions, array_predictions
 	end
 
